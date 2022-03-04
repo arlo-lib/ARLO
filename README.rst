@@ -53,8 +53,8 @@ Metric: TD Error, Discounted Reward
 
 Tuner: TunerGenetic, TunerOptuna
 
-Links to resources used for the paper and the library
-=====================================================
+Links to resources used in the paper and in library
+===================================================
 `MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_
 
 `Optuna <https://github.com/optuna/optuna>`_
