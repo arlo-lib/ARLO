@@ -8,8 +8,8 @@ if __name__ == '__main__':
                                                     obj_name='my_data_gen')
 
     my_pipeline = OfflineRLPipeline(list_of_block_objects=[my_data_gen],
-                               eval_metric=SomeSpecificMetric(obj_name='some_specific_metric_pipeline'), 
-                               obj_name='OfflinePipeline') 
+                                    eval_metric=SomeSpecificMetric(obj_name='some_specific_metric_pipeline'), 
+                                    obj_name='OfflinePipeline') 
 
     my_env = BaseHalfCheetah(obj_name='my_cheetah', gamma=1, horizon=1000)
     
