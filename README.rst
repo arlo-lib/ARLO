@@ -20,7 +20,7 @@ You can install ``ARLO`` via:
 
     pip3 install -e /path/to/ARLO
 
-If you don't have mujoco installed you need to `install <https://mujoco.org/download>`_ it. 
+If you don't have MuJoCo installed you need to `install <https://mujoco.org/download>`_ it. 
 Moreover Python >= 3.7 is needed.
 
 Running Experiments
