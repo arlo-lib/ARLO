@@ -165,7 +165,7 @@ if __name__ == '__main__':
                                               algo_params=dict_of_params_sac,
                                               deterministic_output_policy=False)
                                                                                          
-    tuner_dict = dict(block_to_opt=my_sac, n_agents=20, n_generations=100, n_jobs=16, job_type='thread', seeder=current_seed,
+    tuner_dict = dict(block_to_opt=my_sac, n_agents=20, n_generations=50, n_jobs=16, job_type='thread', seeder=current_seed,
                       eval_metric=DiscountedReward(obj_name='discounted_rew_genetic_algo', n_episodes=100, batch=False, 
                                                    n_jobs=1, job_type='process', log_mode=my_log_mode, checkpoint_log_path=dir_chkpath),
                       input_loader=LoadSameEnv(obj_name='input_loader_env'), obj_name='genetic_algo', prob_point_mutation=0.5, 

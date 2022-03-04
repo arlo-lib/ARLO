@@ -160,7 +160,7 @@ if __name__ == '__main__':
                                                 checkpoint_log_path=dir_chkpath, n_jobs=16, seeder=current_seed,
                                                 algo_params=dict_of_params, deterministic_output_policy=True)
     
-    tuner_dict = dict(block_to_opt=my_ddpg, n_agents=20, n_generations=100, n_jobs=1, job_type='thread', seeder=current_seed,
+    tuner_dict = dict(block_to_opt=my_ddpg, n_agents=20, n_generations=50, n_jobs=1, job_type='thread', seeder=current_seed,
                       eval_metric=DiscountedReward(obj_name='discounted_rew_genetic_algo', n_episodes=10, batch=False, 
                                                    n_jobs=1, job_type='process', log_mode=my_log_mode, checkpoint_log_path=dir_chkpath),
                       input_loader=LoadSameEnv(obj_name='input_loader_env'), 
