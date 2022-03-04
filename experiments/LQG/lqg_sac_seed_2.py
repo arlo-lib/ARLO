@@ -28,7 +28,7 @@ my_lqg = LQG(obj_name='lqg', A=A, B=B, Q=Q, R=R, max_pos=3.5, max_action=3.5, en
              controller_noise=0*1e-4*np.eye(3), seeder=2, horizon=15, gamma=0.9)
 
 my_log_mode = 'file'
-current_seed = 2
+current_seed = 42
 
 class CriticNetwork(nn.Module):
     def __init__(self, input_shape, output_shape, **kwargs):
