@@ -34,6 +34,11 @@ of each script, which is the path to the folder used to save the outputs of the 
 Moreover in the folder ``experiments`` there is a sub-folder named ``plotting scripts`` that contains the scripts used to generate the
 plots and the tables present in the paper.
 
+Examples
+========
+Before diving into the ``experiments`` you may want to checkout the folder ``examples`` where simple examples of usage of ``ARLO``
+are present.
+
 Supported Blocks
 ================
 Data Generation: Random Uniform Policy, MEPOL
@@ -47,3 +52,6 @@ Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP
 Metric: TD Error, Discounted Reward
 
 Tuner: TunerGenetic, TunerOptuna
+
+Links to resources used for the paper and the library
+=====================================================
