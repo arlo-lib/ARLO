@@ -4,6 +4,8 @@ ARLO
 
 **ARLO: Automated Reinforcement Learning Optimizer.**
 
+This is the repository containing the code for running the experiments of the paper ``ARLO: A Framework for Automated Reinforcement Learning``
+
 What is ARLO
 ============
 ARLO is a Python library for Automated Reinforcement Learning.
