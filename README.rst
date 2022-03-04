@@ -55,12 +55,12 @@ Tuner: TunerGenetic, TunerOptuna
 
 Links to resources used for the paper and the library
 =====================================================
-MushroomRL
+`MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_
 
-Optuna
+`Optuna <https://github.com/optuna/optuna>`_
 
-Dam environment
+`Dam Enironment <https://github.com/AndreaTirinzoni/iw-transfer-rl>`_
 
-LQG environment
+`LQG environment <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_
 
-MEPOL
+`Data Generation with MEPOL <https://github.com/muttimirco/mepol/tree/303fb69d90e03cbb45a4619c1ed3843735f640ba>`_
