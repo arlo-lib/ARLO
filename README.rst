@@ -55,3 +55,8 @@ Tuner: TunerGenetic, TunerOptuna
 
 Links to resources used for the paper and the library
 =====================================================
+MushroomRL
+Optuna
+Dam environment
+LQG environment
+MEPOL
