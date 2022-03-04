@@ -31,6 +31,9 @@ experiments you need to install ``ARLO``.
 The only thing you need to configure in order to run experiments is the value of the variable ``dir_chkpath``, placed at the top
 of each script, which is the path to the folder used to save the outputs of the experiments. 
 
+Moreover in the folder ``experiments`` there is a sub-folder named ``plotting scripts`` that contains the scripts used to generate the
+plots and the tables present in the paper.
+
 Supported Blocks
 ================
 Data Generation: Random Uniform Policy, MEPOL
