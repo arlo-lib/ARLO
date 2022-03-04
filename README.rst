@@ -39,4 +39,4 @@ Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP
 
 Metric: TD Error, Discounted Reward
 
-Tuner: GeneticTuner, OptunaTuner
+Tuner: TunerGenetic, TunerOptuna
