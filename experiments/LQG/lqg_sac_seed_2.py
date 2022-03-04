@@ -161,7 +161,7 @@ my_sac = ModelGenerationMushroomOnlineSAC(eval_metric=DiscountedReward(obj_name=
                                                                        log_mode=my_log_mode, checkpoint_log_path=dir_chkpath), 
                                           obj_name='my_sac', regressor_type='generic_regressor', log_mode=my_log_mode, 
                                           checkpoint_log_path=dir_chkpath, n_jobs=16, seeder=current_seed, 
-                                          algo_params = dict_of_params_sac,
+                                          algo_params=dict_of_params_sac,
                                           deterministic_output_policy=False)
                                                                                      
 pbt_dict = dict(block_to_opt=my_sac, n_agents=20, n_generations=100, n_jobs=16, job_type='thread', seeder=current_seed,
