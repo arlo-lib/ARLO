@@ -4,14 +4,11 @@ ARLO
 
 **ARLO: Automated Reinforcement Learning Optimizer.**
 
-.. contents:: **Contents of this document:**
-   :depth: 2
-
 What is ARLO
 ============
 ARLO is a Python library ...................
 
-The full documentation can be downloaded `here <https://...>`_ or from the `site <https://.....>`_.
+The full documentation can be downloaded `here <https://...>`_ or from the `site <https://arlo-lib.github.io/arlo-lib/>`_.
 
 Installation
 ============
