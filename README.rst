@@ -28,7 +28,7 @@ Running Experiments
 You can find the code needed to run the experiments of the paper in the folder ``experiments``. In order to be able to run the
 experiments you need to install ``ARLO``. 
 
-The only thing you need to configure in order to run experiments is the value of the variable ``dir_chkpath``, line the first line
+The only thing you need to configure in order to run experiments is the value of the variable ``dir_chkpath``, present in the first line
 after the main guard in each script, which is the path to the folder used to save the outputs of the experiments. 
 
 Moreover in the folder ``experiments`` there is a sub-folder named ``plotting scripts`` that contains the scripts used to generate the
