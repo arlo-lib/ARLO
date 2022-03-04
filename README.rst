@@ -25,7 +25,11 @@ Moreover Python >= 3.7 is needed.
 
 Running Experiments
 ===================
-You  can find the code needed to run the experiments of the paper in the folder ``experiments``.
+You can find the code needed to run the experiments of the paper in the folder ``experiments``. In order to be able to run the
+experiments you need to install ``ARLO``. 
+
+The only thing you need to configure in order to run experiments is the value of the variable ``dir_chkpath``, placed at the top
+of each script, which is the path to the folder used to save the outputs of the experiment. 
 
 Supported Blocks
 ================
