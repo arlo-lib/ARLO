@@ -14,7 +14,7 @@ from ARLO.rl_pipeline import OnlineRLPipeline
 from ARLO.tuner import TunerGenetic
 from ARLO.block import AutoModelGeneration
 from ARLO.input_loader import LoadSameEnv
-from ARLO.metric import DiscountedReward, SomeSpecificMetric
+from ARLO.metric import DiscountedReward
 from ARLO.environment import BaseHalfCheetah
 
 if __name__ == '__main__':
@@ -153,9 +153,9 @@ if __name__ == '__main__':
                       'n_episodes_per_fit': n_episodes_per_fit
                      }
     
-    my_ddpg = ModelGenerationMushroomOnlineDDPG(eval_metric = DiscountedReward(obj_name='ddpg_metric', n_episodes=10, batch=False, 
-                                                                               log_mode=my_log_mode, 
-                                                                               checkpoint_log_path=dir_chkpath), 
+    my_ddpg = ModelGenerationMushroomOnlineDDPG(eval_metric=DiscountedReward(obj_name='ddpg_metric', n_episodes=10, batch=False, 
+                                                                             log_mode=my_log_mode, 
+                                                                             checkpoint_log_path=dir_chkpath), 
                                                 obj_name='my_ddpg', regressor_type='generic_regressor', log_mode=my_log_mode, 
                                                 checkpoint_log_path=dir_chkpath, n_jobs=16, seeder=current_seed,
                                                 algo_params=dict_of_params, deterministic_output_policy=True)
@@ -176,7 +176,8 @@ if __name__ == '__main__':
                                          log_mode=my_log_mode, checkpoint_log_path=dir_chkpath)
     
     my_pipeline = OnlineRLPipeline(list_of_block_objects=[auto_model_gen], 
-                                   eval_metric=SomeSpecificMetric(obj_name='some_specific_metric_pipeline'), 
+                                   eval_metric=DiscountedReward(obj_name='pipeline_metric', n_episodes=10, batch=True, 
+                                                                log_mode=my_log_mode, checkpoint_log_path=dir_chkpath), 
                                    obj_name='OnlinePipeline',  log_mode=my_log_mode, checkpoint_log_path=dir_chkpath) 
     
     out = my_pipeline.learn(env=my_env)

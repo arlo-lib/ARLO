@@ -14,7 +14,7 @@ from ARLO.rl_pipeline import OnlineRLPipeline
 from ARLO.tuner import TunerGenetic
 from ARLO.block import AutoModelGeneration
 from ARLO.input_loader import LoadSameEnv
-from ARLO.metric import DiscountedReward, SomeSpecificMetric
+from ARLO.metric import DiscountedReward
 from ARLO.hyperparameter import Categorical, Real, Integer
 
 if __name__ == '__main__':
@@ -180,7 +180,8 @@ if __name__ == '__main__':
                                          log_mode=my_log_mode, checkpoint_log_path=dir_chkpath)
     
     my_pipeline = OnlineRLPipeline(list_of_block_objects=[auto_model_gen], 
-                                   eval_metric=SomeSpecificMetric(obj_name='some_specific_metric_pipeline'), 
+                                   eval_metric=DiscountedReward(obj_name='pipeline_metric', n_episodes=100, batch=False,
+                                                                log_mode=my_log_mode, checkpoint_log_path=dir_chkpath), 
                                    obj_name='OnlinePipeline', log_mode=my_log_mode, checkpoint_log_path=dir_chkpath) 
     
     out = my_pipeline.learn(env=my_lqg)
