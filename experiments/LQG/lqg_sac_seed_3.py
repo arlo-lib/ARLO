@@ -8,14 +8,14 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-from AutoRL.environment import LQG
-from AutoRL.block import ModelGenerationMushroomOnlineSAC
-from AutoRL.rl_pipeline import OnlineRLPipeline
-from AutoRL.tuner import PBTGeneticAlgorithm
-from AutoRL.block import AutoModelGeneration
-from AutoRL.input_loader import LoadSameEnv
-from AutoRL.metric import DiscountedReward, SomeSpecificMetric
-from AutoRL.hyperparameter import Categorical, Real, Integer
+from ARLO.environment import LQG
+from ARLO.block import ModelGenerationMushroomOnlineSAC
+from ARLO.rl_pipeline import OnlineRLPipeline
+from ARLO.tuner import TunerGenetic
+from ARLO.block import AutoModelGeneration
+from ARLO.input_loader import LoadSameEnv
+from ARLO.metric import DiscountedReward, SomeSpecificMetric
+from ARLO.hyperparameter import Categorical, Real, Integer
 
 if __name__ == '__main__':
     dir_chkpath = '/path/for/saving/output' 
@@ -165,18 +165,18 @@ if __name__ == '__main__':
                                               algo_params=dict_of_params_sac,
                                               deterministic_output_policy=False)
                                                                                          
-    pbt_dict = dict(block_to_opt=my_sac, n_agents=20, n_generations=100, n_jobs=16, job_type='thread', seeder=current_seed,
-                    eval_metric=DiscountedReward(obj_name='discounted_rew_genetic_algo', n_episodes=100, batch=False, 
-                                                 n_jobs=1, job_type='process', log_mode=my_log_mode, checkpoint_log_path=dir_chkpath),
-                    input_loader=LoadSameEnv(obj_name='input_loader_env'), obj_name='genetic_algo', prob_point_mutation=0.5, 
-                    output_save_periodicity=1, log_mode=my_log_mode, checkpoint_log_path=dir_chkpath, tuning_mode='no_elitism')
+    tuner_dict = dict(block_to_opt=my_sac, n_agents=20, n_generations=100, n_jobs=16, job_type='thread', seeder=current_seed,
+                      eval_metric=DiscountedReward(obj_name='discounted_rew_genetic_algo', n_episodes=100, batch=False, 
+                                                   n_jobs=1, job_type='process', log_mode=my_log_mode, checkpoint_log_path=dir_chkpath),
+                      input_loader=LoadSameEnv(obj_name='input_loader_env'), obj_name='genetic_algo', prob_point_mutation=0.5, 
+                      output_save_periodicity=1, log_mode=my_log_mode, checkpoint_log_path=dir_chkpath, tuning_mode='no_elitism')
     
-    pbt = PBTGeneticAlgorithm(**pbt_dict)
+    tuner = TunerGenetic(**tuner_dict)
     
     auto_model_gen = AutoModelGeneration(eval_metric=DiscountedReward(obj_name='discounted_rew_auto_model_gen', n_episodes=100,
                                                                       batch=False, n_jobs=1, job_type='process', 
                                                                       log_mode=my_log_mode, checkpoint_log_path=dir_chkpath),
-                                         obj_name='auto_model_gen', tuner_blocks_dict={'ppo_tuner': pbt}, 
+                                         obj_name='auto_model_gen', tuner_blocks_dict={'genetic_tuner': tuner}, 
                                          log_mode=my_log_mode, checkpoint_log_path=dir_chkpath)
     
     my_pipeline = OnlineRLPipeline(list_of_block_objects=[auto_model_gen], 
