@@ -49,7 +49,7 @@ Feature Engineering: Recursive Feature Selection, Forward Feature Selection, Nys
 
 Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP
 
-Metric: TD Error, Discounted Reward
+Metric: TD Error, Discounted Reward, Time Series Rolling Discounted Reward
 
 Tuner: TunerGenetic, TunerOptuna
 
