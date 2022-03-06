@@ -58,10 +58,13 @@ Supported Blocks
 
 * Environment: Grid World, Car On Hill, CartPole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
 
-Other than the blocks there are also other implemented capabilities in the library: saving and loading of all objects, creations
-of plots with the performance obtained throughout the learning procedure of Online Model Generation blocks, creations of heatmaps
-showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained in a Tunable Unit of 
-an Automatic Unit.
+Other than the blocks there are also other implemented capabilities in the library: 
+* Saving and loading of all objects
+
+* Creations of plots with the performance obtained throughout the learning procedure of Online Model Generation blocks
+
+* Creations of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
+  in a Tunable Unit of an Automatic Unit.
 
 Why you should use ARLO
 =======================
