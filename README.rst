@@ -77,8 +77,7 @@ Why you should use ARLO
  
 * It is ``fully`` extendable: anything (a block, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can be 
   made up into a Block compatible with the framework and the library.
-  
-Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
+  Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
 
 Links to resources used in the paper and in the library
 =======================================================
