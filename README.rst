@@ -45,7 +45,7 @@ Supported Blocks
 
 * Data Preparation: Identity Block, 1-KNN Imputation, Mean Imputation.
 
-* Feature Engineering: Itdentity Block, Recursive Feature Selection, Forward Feature Selection, Nystroem Map Feature Generation.
+* Feature Engineering: Identity Block, Recursive Feature Selection, Forward Feature Selection, Nystroem Map Feature Generation.
 
 * Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP.
 
