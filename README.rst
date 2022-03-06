@@ -56,7 +56,7 @@ Supported Blocks
 * Input Loader: Load same environment, Load same dataset, Load bootstrapped dataset, Load bootstrapped dataset of different lenghts
   and combinations of the above.
 
-* Environment: Grid World, Car On Hill, CartPole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
+* Environment: Grid World, Car On Hill, Cart Pole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
 
 Other than the blocks there are also other implemented capabilities in the library: 
 

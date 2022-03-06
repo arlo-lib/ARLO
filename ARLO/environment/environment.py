@@ -476,18 +476,7 @@ class BaseGridWorld(GridWorld, BaseEnvironment):
                 +', seeder='+str(self.seeder)+', local_prng='+str(self.local_prng)+', log_mode='+str(self.log_mode)\
                 +', checkpoint_log_path='+str(self.checkpoint_log_path)+', verbosity='+str(self.verbosity)\
                 +', n_jobs='+str(self.n_jobs)+', job_type='+str(self.job_type)+', logger='+str(self.logger)+')'
-    
-    def _step(self, state, action):
-        """
-        The GridWorld environment of MushroomRL takes as input to the step() method a numpy.array even though the action space is
-        Discrete, however the DataGenerationRandomUniformPolicy block would sample from the action space an integer and not a 
-        numpy.array. 
-        
-        This method overrides the method _step() of GridWorld to make everything work out.
-        """
-        
-        return super()._step(state, np.array([action]))
-        
+
     def seed(self, seed=None):
         """
         Method used to seed the environment.

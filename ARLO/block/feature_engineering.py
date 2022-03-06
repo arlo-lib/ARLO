@@ -1125,8 +1125,10 @@ class FeatureEngineeringFSCMI(FeatureEngineering):
             
         self.logger.info(msg='Sorted features ids: '+str(sorted_ids))
         self.logger.info(msg='Sorted features scores: '+str(sorted_scores))
+        
         self.feature_importance_scores = sorted_scores 
-                
+        self.ordered_features = sorted_ids
+        
         return sorted_ids
     
     def _feature_engineer_env(self, old_env):

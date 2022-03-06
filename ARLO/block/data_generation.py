@@ -83,7 +83,7 @@ class DataGeneration(Block):
             #If the action_space is Discrete I sample from a discrete uniform distribution, else if the action_space is Box I 
             #sample from a continuous uniform distribution.
             if(discrete_actions):
-                action = self.local_prng.integers(env.action_space.n)
+                action = np.array([self.local_prng.integers(env.action_space.n)])
             else:
                 action = env.sample_from_box_action_space()
         else:
@@ -93,12 +93,6 @@ class DataGeneration(Block):
         
         last = not(episode_steps < env.info.horizon and not done)
         
-        #if the action space is discrete then by calling action_space.sample() i will get an integer but each sample must be
-        #made of numpy arrays. if the action sapce is continuous by calling action_space.sample() i will get a numpy array so
-        #i do not have to do anything in that case:
-        if(discrete_actions):
-            action = np.array([action])
-            
         return state, action, reward, next_state, done, last
         
     def _generate_a_dataset(self, env, n_samples, discrete_actions, policy=None):
