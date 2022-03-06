@@ -59,6 +59,7 @@ Supported Blocks
 * Environment: Grid World, Car On Hill, CartPole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
 
 Other than the blocks there are also other implemented capabilities in the library: 
+
 * Saving and loading of all objects
 
 * Creations of plots with the performance obtained throughout the learning procedure of Online Model Generation blocks
