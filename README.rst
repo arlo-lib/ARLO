@@ -25,6 +25,8 @@ You can install ``ARLO`` via:
 If you don't have MuJoCo installed you need to `install <https://mujoco.org/download>`_ it. 
 Moreover Python >= 3.7 is needed.
 
+The library is tested over macOS and Linux.
+
 Running Experiments
 ===================
 You can find the code needed to run the experiments of the paper in the folder ``experiments``. In order to be able to run the
