@@ -54,7 +54,7 @@ Supported Blocks
 * Tuner: TunerGenetic, TunerOptuna.
 
 * Input Loader: Load same environment, Load same dataset, Load bootstrapped dataset, Load bootstrapped dataset of different lenghts
-and combinations of the above.
+  and combinations of the above.
 
 * Environment: Grid World, Car On Hill, CartPole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
 
@@ -68,11 +68,11 @@ Why you should use ARLO
 * It is well written and documented
  
 * Given that AutoML (and thus AutoRL) are very computationally expensive ARLO tries to optimize as much as it can all the operations. 
-For example you can extract a dataset with a Data Generation block in parallel, you can learn RL algorithms in parallel, you can 
-evaluate blocks in parallel and so on and so forth.
+  For example you can extract a dataset with a Data Generation block in parallel, you can learn RL algorithms in parallel, you can 
+  evaluate blocks in parallel and so on and so forth.
  
 * It is ``fully`` extendable: anything (a block, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can be 
-made up into a Block compatible with the framework and the library.
+  made up into a Block compatible with the framework and the library.
   
 Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
 
