@@ -6,6 +6,8 @@ The Class OnlineRLPipeline inherits from the Class RLPipeline.
 An OnlineRLPipeline is used to solve an online reinforcement learning problem. 
 """
 
+import numpy as np
+
 from ARLO.environment.environment import BaseEnvironment
 from ARLO.rl_pipeline.rl_pipeline import RLPipeline
 from ARLO.block.block_output import BlockOutput
@@ -123,6 +125,8 @@ class OnlineRLPipeline(RLPipeline):
                     self.logger.info(msg='Now evaluating learnt policy...')
                     res_eval = tmp_block.eval_metric.evaluate(block_res=tmp_res, block=tmp_block, env=env)                    
                     policy_eval = {'eval_mean': res_eval, 'eval_var': tmp_block.eval_metric.eval_var}
+                    self.logger.info(msg='Mean of policy evaluation: '+str(policy_eval['eval_mean']))
+                    self.logger.info(msg='Standard deviation of policy evaluation: '+str(np.sqrt(policy_eval['eval_var'])))
                 elif(isinstance(tmp_block, FeatureEngineering)):
                     #FeatureEngineering blocks return an env:
                     env = tmp_res.env

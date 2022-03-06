@@ -211,14 +211,18 @@ class BaseEnvironment(AbstractUnit, ABC):
         This method samples from a Box Action Space.
         """
         
-        return self._sample_from_box(space=self.action_space)
+        sample = self._sample_from_box(space=self.action_space)
+        
+        return sample
                 
     def sample_from_box_observation_space(self):
         """
         This method samples from a Box Observation Space.
         """
         
-        return self._sample_from_box(space=self.observation_space)
+        sample = self._sample_from_box(space=self.observation_space)
+        
+        return sample
             
     def set_params(self, params_dict):
         """

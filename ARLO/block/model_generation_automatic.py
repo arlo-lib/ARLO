@@ -54,8 +54,9 @@ class AutoModelGeneration(ModelGeneration):
         self.works_on_box_observation_space = True
         self.works_on_discrete_observation_space = True
         
-        #For the moment i do not want to tune automatic blocks with the same tuners i use for specific blocks
+        #For the moment i do not want to tune automatic blocks:
         self.is_parametrised = False
+        
         if(tuner_blocks_dict is None): 
             #the default is generic. Each block in the default is then learnt only if of the appropriate type. for example if
             #QLearning is in the default it will not be learnt in an Offline RL Pipeline!

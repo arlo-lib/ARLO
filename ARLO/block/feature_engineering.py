@@ -1,17 +1,19 @@
 """
 This module contains the implementation of the Class FeatureEngineering, of the Class FeatureEngineeringIdentity, of the Class
-FeatureEngineeringRFS and of the Class FeatureEngineeringNystroemMap. 
+FeatureEngineeringRFS, of the Class FeatureEngineeringFSCMI and of the Class FeatureEngineeringNystroemMap. 
 
 The Class FeatureEngineering inherits from the Class Block, while the Classes FeatureEngineeringIdentity, FeatureEngineeringRFS 
-and FeatureEngineeringNystroemMap both inherit from the Class FeatureEngineering.
+FeatureEngineeringFSCMI, and FeatureEngineeringNystroemMap all inherit from the Class FeatureEngineering.
 
-The Class FeatureEngineering is a Class used to group all Classes that do FeatureEngineering: this also includes 
-AutoFeatureEngineering.
+The Class FeatureEngineering is a Class used to group all Classes that do FeatureEngineering.
 """
 
 from abc import abstractmethod
 import copy
 import numpy as np
+from joblib import Parallel, delayed
+from scipy.special import digamma
+from scipy.spatial import cKDTree
 
 from mushroom_rl.utils.spaces import Box
 from sklearn.kernel_approximation import Nystroem
@@ -28,8 +30,7 @@ from ARLO.hyperparameter.hyperparameter import Real, Integer, Categorical
 
 class FeatureEngineering(Block):
     """
-    This is an abstract Class. It is used as generic base Class for all feature engineering blocks. Both single blocks and 
-    automatic blocks inherit from this Class.
+    This is an abstract Class. It is used as generic base Class for all feature engineering blocks. 
     """
     
     def __repr__(self):
@@ -154,14 +155,42 @@ class FeatureEngineering(Block):
             
         return train_data, env
     
-    @abstractmethod
     def get_params(self):
-        raise NotImplementedError
+        """
+        Returns
+        -------
+        A deep copy of the parameters in the dictionary self.algo_params.
+        """
+        
+        return copy.deepcopy(self.algo_params)
     
-    @abstractmethod
-    def set_params(self):
-        raise NotImplementedError
-    
+    def set_params(self, new_params):
+        """
+        Parameters
+        ----------
+        new_params: The new parameters to be used in the specific feature engineering algorithm. It must be a dictionary that 
+                    does not contain any dictionaries(i.e: all parameters must be at the same level).
+                    
+        Returns
+        -------
+        bool: This method returns True if new_params is set correctly, and False otherwise.
+        """
+        
+        if(new_params is not None):   
+            self.algo_params = new_params
+            
+            current_params = self.get_params()
+            
+            if(current_params is not None):
+                self.algo_params_upon_instantiation = copy.deepcopy(current_params)
+                return True
+            else:
+                self.logger.error(msg='There was an error getting the parameters!')
+                return False
+        else:
+            self.logger.error(msg='Cannot set parameters: \'new_params\' is \'None\'!')
+            return False            
+          
     @abstractmethod
     def analyse(self):
         raise NotImplementedError
@@ -191,9 +220,14 @@ class FeatureEngineeringIdentity(FeatureEngineering):
         self.works_on_box_observation_space = True
         self.works_on_discrete_observation_space = True
         
-        #this block has no parameters and i never want to tune it
+        #this block has no parameters
         self.is_parametrised = False
            
+        #Set algo_params and algo_params_upon_instantiation for consitency. This is also needed else we would need to modify the
+        #method pre_learn_check()
+        self.algo_params = None
+        self.algo_params_upon_instantiation = None
+        
     def __repr__(self):
        return str(self.__class__.__name__)+'('+'eval_metric='+str(self.eval_metric)+', obj_name='+str(self.obj_name)\
               +', seeder='+ str(self.seeder)+', local_prng='+ str(self.local_prng)+', log_mode='+str(self.log_mode)\
@@ -355,7 +389,7 @@ class FeatureEngineeringRFS(FeatureEngineering):
         ----------
         algo_params: This contains the parameters of the algorithm implemented in this class. 
                      
-                     The default is none.
+                     The default is None.
                      
                      If None the following will be used:
                      'threshold': 0.1
@@ -400,13 +434,28 @@ class FeatureEngineeringRFS(FeatureEngineering):
         self.works_on_box_observation_space = True
         self.works_on_discrete_observation_space = False
         
-        #this block has parameters and i may want to tune it
+        #this block has parameters and I may want to tune them:
         self.is_parametrised = True
         
         self.algo_params = algo_params
        
         self.data_gen_block_for_env_wrap = data_gen_block_for_env_wrap
-
+  
+        if(self.data_gen_block_for_env_wrap is None):
+            #extract data from the env using a DataGeneration block. This is needed because I need to have the same 
+            #transformation for the entire environment, and the only way to do so is to fit the transformation on the same 
+            #dataset. Otherwise for each call of the step method i would fit a different transformation, and so the operation 
+            #would not be consistent among different calls of the step method of the same environment.
+            data_gen_params = dict(eval_metric=SomeSpecificMetric(obj_name='place_holder_metric'), 
+                                   obj_name='data_gen_for_wrappin_env', seeder=self.seeder, 
+                                   algo_params={'n_samples': Integer(hp_name='n_samples', obj_name='n_samples_data_gen', 
+                                                current_actual_value=100000)}, 
+                                   log_mode=self.log_mode, 
+                                   checkpoint_log_path=self.checkpoint_log_path, verbosity=0, n_jobs=self.n_jobs, 
+                                   job_type=self.job_type)
+            
+            self.data_gen_block_for_env_wrap = DataGenerationRandomUniformPolicy(**data_gen_params)
+            
         if(self.algo_params is None):
             threshold = Real(hp_name='threshold', obj_name='threshold', current_actual_value=0.1, range_of_values=[0.1,0.8], 
                              to_mutate=True) 
@@ -417,19 +466,6 @@ class FeatureEngineeringRFS(FeatureEngineering):
                                            current_actual_value=XGBRegressor(random_state=self.seeder, n_jobs=self.n_jobs))
             
             self.algo_params = {'threshold': threshold, 'n_recursions': n_recursions,'feature_selector': feature_selector}
-        
-        if(self.data_gen_block_for_env_wrap is None):
-            #extract data from the env using a DataGeneration block. This is needed because I need to have the same 
-            #transformation for the entire environment, and the only way to do so is to fit the transformation on the same 
-            #dataset. Otherwise for each call of the step method i would fit a different transformation, and so the operation 
-            #would not be consistent among different calls of the step method of the same environment.
-            data_gen_params = dict(eval_metric=SomeSpecificMetric(obj_name='place_holder_metric'), 
-                                   obj_name='data_gen_for_wrappin_env', seeder=self.seeder, 
-                                   algo_params={'n_samples': 100000}, log_mode=self.log_mode, 
-                                   checkpoint_log_path=self.checkpoint_log_path, verbosity=0, n_jobs=self.n_jobs, 
-                                   job_type=self.job_type)
-            
-            self.data_gen_block_for_env_wrap = DataGenerationRandomUniformPolicy(**data_gen_params)
             
         self.algo_params_upon_instantiation = copy.deepcopy(self.algo_params)
         
@@ -466,23 +502,14 @@ class FeatureEngineeringRFS(FeatureEngineering):
            of XGBRegressor.
         """
         
-        data_as_arrays = np.array(original_train_data.parse_data())
+        parsed_data = original_train_data.parse_data()
+        
+        data_as_arrays = np.hstack((parsed_data[0], parsed_data[1], parsed_data[2].reshape(-1,1), parsed_data[3]))
 
-        y = data_as_arrays[np.array(idx_target)].tolist()
-        
-        # y = []
-        # for i in range(len(original_train_data.dataset)): 
-        #     current_state = original_train_data.dataset[i][0].tolist() 
-        #     current_action = original_train_data.dataset[i][1].tolist()
-        #     current_reward = [original_train_data.dataset[i][2]]
-        #     next_state = original_train_data.dataset[i][3].tolist()
-            
-        #     concatenated_input = np.array(current_state + current_action + current_reward + next_state)
-            
-        #     y.append(concatenated_input[np.array(idx_target)].tolist())
-                
+        y = data_as_arrays[:,np.array(idx_target)].tolist()
+                      
         y = np.array(y).ravel() 
-        
+                
         return y 
             
     def _recursive_call(self, original_train_data, list_of_selected_state_features, list_of_selected_action_features, 
@@ -594,20 +621,12 @@ class FeatureEngineeringRFS(FeatureEngineering):
         len_obs_space_act_space = dim_observation_space + dim_action_space
         
         self.list_feats = list(np.arange(len_obs_space_act_space))
-                
-        data_as_arrays = np.array(original_train_data.parse_data())
-        self.X = data_as_arrays[np.array(self.list_feats)].tolist()
+           
+        parsed_data = original_train_data.parse_data()
         
-        # self.X = []
-        # for i in range(len(original_train_data.dataset)): 
-        #     current_state = original_train_data.dataset[i][0].tolist() 
-        #     current_action = original_train_data.dataset[i][1].tolist()
-        #     current_reward = [original_train_data.dataset[i][2]]
-        #     next_state = original_train_data.dataset[i][3].tolist()
-            
-        #     concat_input = np.array(current_state + current_action + current_reward + next_state)
-            
-        #     self.X.append(concat_input[np.array(self.list_feats)].tolist())
+        data_as_arrays = np.hstack((parsed_data[0], parsed_data[1], parsed_data[2].reshape(-1,1), parsed_data[3]))
+        
+        self.X = data_as_arrays[:,np.array(self.list_feats)].tolist()
                     
         y = self._from_tabular_dataset_extract_y(original_train_data=original_train_data, idx_target=[len_obs_space_act_space])
         
@@ -908,42 +927,6 @@ class FeatureEngineeringRFS(FeatureEngineering):
         self.logger.info(msg='\''+str(self.__class__.__name__)+'\' object learnt successfully!')
         return outputFE
 
-    def get_params(self):
-        """
-        Returns
-        -------
-        A deep copy of the parameters in the dictionary self.algo_params.
-        """
-        
-        return copy.deepcopy(self.algo_params)
-    
-    def set_params(self, new_params):
-        """
-        Parameters
-        ----------
-        new_params: The new parameters to be used in the specific feature engineering algorithm. It must be a dictionary that 
-                    does not contain any dictionaries(i.e: all parameters must be at the same level).
-                    
-        Returns
-        -------
-        bool: This method returns True if new_params is set correctly, and False otherwise.
-        """
-        
-        if(new_params is not None):   
-            self.algo_params = new_params
-            
-            current_params = self.get_params()
-            
-            if(current_params is not None):
-                self.algo_params_upon_instantiation = copy.deepcopy(current_params)
-                return True
-            else:
-                self.logger.error(msg='There was an error getting the parameters!')
-                return False
-        else:
-            self.logger.error(msg='Cannot set parameters: \'new_params\' is \'None\'!')
-            return False     
-     
     def analyse(self):
         """
         This method is yet to be implemented.
@@ -951,7 +934,419 @@ class FeatureEngineeringRFS(FeatureEngineering):
 
         raise NotImplementedError
     
+    
+class FeatureEngineeringFSCMI(FeatureEngineering):
+    """
+    This Class implements a specific feature engineering algorithm: it performs forward feature selection of the observation 
+    space using as metric the mutual information as proposed in Feature Selection via Mutual Information: New Theoretical 
+    Insights. 
+    
+    cf. https://arxiv.org/abs/1907.07384
+    
+    The implementation of this block is based on the implementation associated with the cited paper.
+    
+    This can be applied only to continuous spaces: it has no effect on discrete spaces.
+    """
+          
+    def __init__(self, eval_metric, obj_name, seeder=2, algo_params=None, data_gen_block_for_env_wrap=None, log_mode='console', 
+                  checkpoint_log_path=None, verbosity=3, n_jobs=1, job_type='process'):
+        """        
+        Parameters
+        ----------
+        algo_params: This contains the parameters of the algorithm implemented in this class. 
+                     
+                     The default is None.
+                     
+                     If None the following will be used:
+                     'threshold': 0
+                     'k': 5
+                     
+        data_gen_block_for_env_wrap: This must be an object of a Class inheriting from the Class DataGeneration. This is used to 
+                                     extract a dataset from the environment and this dataset will be used for fitting the feature
+                                     engineering algorithm. This is needed because otherwise we would fit and transform a single
+                                     sample from the environment at the time and thus we would have different features across
+                                     different samples from the environment.
+                                     
+                                     This must extract an object of a Class inheriting from the Class TabularDataSet.
+                                     
+                                     This is only used if the method learn() does receives an env but does not receive train_data.
+                                     
+                                     The default is None.
+                                     
+                                     If None a DataGenerationRandomUniformPolicy with 'n_samples': 100000 will be used.
+                                         
+        Non-Parameters Members
+        ----------------------                                     
+        algo_params_upon_instantiation: This a copy of the original value of algo_params, namely the value of
+                                        algo_params that the object got upon creation. This is needed for re-loading
+                                        objects.
+       
+        The other parameters and non-parameters members are described in the Class Block.
+        """
+                       
+        super().__init__(eval_metric=eval_metric, obj_name=obj_name, seeder=seeder, log_mode=log_mode, 
+                          checkpoint_log_path=checkpoint_log_path, verbosity=verbosity, n_jobs=n_jobs, job_type=job_type)
+        
+        self.works_on_online_rl = True
+        self.works_on_offline_rl = True
+        self.works_on_box_action_space = True
+        self.works_on_discrete_action_space = True
+        self.works_on_box_observation_space = True
+        self.works_on_discrete_observation_space = False
+        
+        #this block has parameters and I may want to tune them:
+        self.is_parametrised = True
+        
+        self.algo_params = algo_params
+       
+        self.data_gen_block_for_env_wrap = data_gen_block_for_env_wrap
 
+        if(self.data_gen_block_for_env_wrap is None):
+            #extract data from the env using a DataGeneration block. This is needed because I need to have the same 
+            #transformation for the entire environment, and the only way to do so is to fit the transformation on the same 
+            #dataset. Otherwise for each call of the step method i would fit a different transformation, and so the operation 
+            #would not be consistent among different calls of the step method of the same environment.
+            data_gen_params = dict(eval_metric=SomeSpecificMetric(obj_name='place_holder_metric'), 
+                                   obj_name='data_gen_for_wrappin_env', seeder=self.seeder, 
+                                   algo_params={'n_samples': Integer(hp_name='n_samples', obj_name='n_samples_data_gen', 
+                                                current_actual_value=100000)}, 
+                                   log_mode=self.log_mode, 
+                                   checkpoint_log_path=self.checkpoint_log_path, verbosity=0, n_jobs=self.n_jobs, 
+                                   job_type=self.job_type)
+            
+            self.data_gen_block_for_env_wrap = DataGenerationRandomUniformPolicy(**data_gen_params)
+            
+        if(self.algo_params is None):
+            threshold = Real(hp_name='threshold', obj_name='threshold', current_actual_value=0, range_of_values=[0,1], 
+                              to_mutate=True) 
+            k = Integer(hp_name='k', obj_name='k', current_actual_value=5, range_of_values=[1,50], to_mutate=True) 
+            
+            self.algo_params = {'threshold': threshold, 'k': k}
+                    
+        self.algo_params_upon_instantiation = copy.deepcopy(self.algo_params)
+
+    def _MIEstimateMixed(self, X, Y):
+        """ 
+        MI Estimator based on Mixed Random Variable Mutual Information Estimator - Gao et al.
+        """
+        
+        k = self.algo_params['k'].current_actual_value
+        
+        nSamples = len(X)
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+        if Y.ndim == 1:
+            Y = Y.reshape(-1, 1)
+        dataset = np.concatenate((X, Y), axis=1) #concatenate Y to X as a column
+        
+        #kdtree to quickly find the K-NN
+        tree_xy = cKDTree(dataset)
+        tree_x = cKDTree(X)
+        tree_y = cKDTree(Y)
+        
+        # rho
+        knn_dist = [tree_xy.query(sample, k + 1, p=float('inf'))[0][k] for sample in dataset]
+        
+        res = 0
+        for i in range(nSamples):
+            k_hat, n_xi, n_yi = k, k, k
+            if knn_dist[i] <= 1e-15:
+                #points at distance less than or equal to zero (almost)
+                k_hat = len(tree_xy.query_ball_point(dataset[i], 1e-15, p=float('inf')))
+                n_xi = len(tree_x.query_ball_point(X[i], 1e-15, p=float('inf')))
+                n_yi = len(tree_y.query_ball_point(Y[i], 1e-15, p=float('inf')))
+            else:
+                k_hat = k
+                
+                #points at distance less than or equal to rho
+                n_xi = len(tree_x.query_ball_point(X[i], knn_dist[i] - 1e-15, p=float('inf')))
+                n_yi = len(tree_y.query_ball_point(Y[i], knn_dist[i] - 1e-15, p=float('inf')))
+            
+            res += (digamma(k_hat) + np.log(nSamples) - digamma(n_xi) - digamma(n_yi)) / nSamples
+            
+        return res
+    
+    def _CMIEstimateMixed(self, X, Y, Z):
+        """ 
+        I(X;Y|Z) = I(X,Z; Y) - I(Z; Y) 
+        """
+        
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+        if Y.ndim == 1:
+            Y = Y.reshape(-1, 1)
+        if Z.ndim == 1:
+            Z = Z.reshape(-1, 1)
+        XZ = np.hstack((X, Z))  
+        
+        i1 = self._MIEstimateMixed(X=XZ, Y=Y)
+        i2 = self._MIEstimateMixed(X=Z, Y=Y)
+      
+        return i1 - i2
+        
+    def _mixed_mutual_info_forward_fs(self, features, target):
+        """ 
+        The function order feature importance in forward way features is an m*n matrix (m-samples; n-features), target can 
+        either be a one dim array or a matrix.
+        """
+    
+        remaining_features, target = np.array(features), np.array(target)
+        selected_features = np.zeros(remaining_features.shape)
+    
+        sorted_ids, sorted_scores = [], []
+        
+        mi_values = np.array(Parallel(n_jobs=self.n_jobs, backend=self.backend, prefer=self.prefer)(
+                                      delayed(self._MIEstimateMixed)(remaining_features[:, ii], target) 
+                                              for ii in range(remaining_features.shape[1])))
+                
+        selected_features[:, 0] = remaining_features[:,np.argmax(mi_values)]
+
+        ids_aux = list(range(features.shape[1]))
+
+        remaining_features = np.delete(remaining_features, np.argmax(mi_values), axis=1)
+        
+        sorted_ids.append(ids_aux.pop(np.argmax(mi_values)))
+        sorted_scores.append(np.max(mi_values))
+    
+        for ii in range(1, selected_features.shape[1]):
+            cmi_values = np.array(Parallel(n_jobs=self.n_jobs, backend=self.backend, prefer=self.prefer)(
+                                           delayed(self._CMIEstimateMixed)(remaining_features[:,jj], target, 
+                                                                           selected_features[:,:ii]) 
+                                                   for jj in range(remaining_features.shape[1])))
+           
+            if(max(cmi_values) < self.algo_params['threshold'].current_actual_value):
+                break
+            
+            selected_features[:,ii] = remaining_features[:,np.argmax(cmi_values)]
+            remaining_features = np.delete(remaining_features, np.argmax(cmi_values), axis=1)  
+      
+            sorted_ids.append(ids_aux.pop(np.argmax(cmi_values)))            
+            sorted_scores.append(np.max(cmi_values))
+            
+        self.logger.info(msg='Sorted features ids: '+str(sorted_ids))
+        self.logger.info(msg='Sorted features scores: '+str(sorted_scores))
+        self.feature_importance_scores = sorted_scores 
+                
+        return sorted_ids
+    
+    def _feature_engineer_env(self, old_env):
+        """
+        Parameters
+        ----------
+        old_env: This is the env as is before entering this block. It must be an object of a Class inheriting from the Class    
+                 BaseEnvironment.
+
+        Returns
+        -------
+        new_env: This is the env as is after going through this block. It must be an object of a Class inheriting from the Class    
+                 BaseEnvironment.
+                 
+        This method wraps the environment by selecting at each call of the method step() only the meaningful state features.
+        
+        A dataset is collected from the environment and the meaningful features are obtained.
+        """
+        
+        if(self.original_data_input_to_the_block is None):
+            self.data_gen_block_for_env_wrap.pipeline_type = 'offline'
+            
+            #check the pre_learn:
+            is_ok_to_learn = self.data_gen_block_for_env_wrap.pre_learn_check(env=old_env)   
+                
+            if(not is_ok_to_learn):
+                exc_msg = 'There was an error in the \'pre_learn_check\' method of the data generation object needed to extract'\
+                          +' the data, which is used for feature selection!'
+                self.logger.exception(msg=exc_msg)
+                raise RuntimeError(exc_msg)
+                
+            generated_data = self.data_gen_block_for_env_wrap.learn(env=old_env) 
+            generated_data = generated_data.train_data
+            
+            if(not self.data_gen_block_for_env_wrap.is_learn_successful):
+                exc_msg = 'There was an error in the \'learn\' method of the data generation object needed to extract'\
+                          +' the data, which is used for feature selection!'
+                self.logger.exception(msg=exc_msg)
+                raise RuntimeError(exc_msg)
+                                                
+            if(not isinstance(generated_data, TabularDataSet)):            
+                exc_msg = 'The \'data_gen_block_for_env_wrap\' must extract an object of a Class inheriting from'\
+                          +' the Class \'TabularDataSet\'!'
+                self.logger.exception(msg=exc_msg)
+                raise RuntimeError(exc_msg)
+        else:
+            generated_data = self.original_data_input_to_the_block 
+        
+        parsed = generated_data.parse_data()
+        
+        target = np.hstack((parsed[2].reshape(-1,1),parsed[3]))
+
+        list_of_selected_state_features = self._mixed_mutual_info_forward_fs(features=parsed[0], target=target)
+                
+        if(list_of_selected_state_features is not None):
+            class Wrapper(BaseObservationWrapper):
+                def __init__(self, env, obj_name, seeder=2, log_mode='console', checkpoint_log_path=None, verbosity=3, n_jobs=1, 
+                             job_type='process'):
+                    super().__init__(env=env, obj_name=obj_name, seeder=seeder, log_mode=log_mode,
+                                     checkpoint_log_path=checkpoint_log_path, verbosity=verbosity, n_jobs=n_jobs, 
+                                     job_type=job_type)
+                    
+                    old_observation_space = self.observation_space
+                    
+                    #this block can only work on Box observation spaces:
+                    new_low = copy.deepcopy(old_observation_space.low)[np.array(list_of_selected_state_features)] 
+                    new_high = copy.deepcopy(old_observation_space.high)[np.array(list_of_selected_state_features)] 
+                    
+                    #set the new observation space:
+                    self.observation_space = Box(low=new_low, high=new_high)
+                    
+                def observation(self, observation):
+                    new_obs = observation[np.array(list_of_selected_state_features)] 
+                    
+                    return new_obs
+            
+            new_env = Wrapper(env=old_env, obj_name='wrapped_env_feature_selection', seeder=old_env.seeder, 
+                              log_mode=old_env.log_mode, checkpoint_log_path=old_env.checkpoint_log_path, 
+                              verbosity=old_env.verbosity, n_jobs=old_env.n_jobs, job_type=old_env.job_type)  
+                    
+            return new_env
+        else:
+            wrn_msg = 'The forward feature selection failed: no states were selected. Returning input \'env\' as is.' 
+            self.logger.warning(msg=wrn_msg)
+            
+            return old_env
+        
+    def _feature_engineer_data(self, old_data):      
+        new_data = copy.deepcopy(old_data)
+        
+        parsed = old_data.parse_data()
+        
+        target = np.hstack((parsed[2].reshape(-1,1),parsed[3]))
+
+        list_of_selected_state_features = self._mixed_mutual_info_forward_fs(features=parsed[0], target=target)
+
+        if(list_of_selected_state_features is not None):
+            #this block can only work on Box observation spaces:
+            new_low = copy.deepcopy(old_data.observation_space.low)[np.array(list_of_selected_state_features)] 
+            new_high = copy.deepcopy(old_data.observation_space.high)[np.array(list_of_selected_state_features)] 
+            new_obs_space = Box(new_low, new_high)
+            
+            new_current_states = []
+            old_states = old_data.get_states()
+            # for i in range(len(old_states)):
+            #     new_current_states.append(old_states[i][np.array(list_of_selected_state_features)])
+            # new_current_states = np.array(new_current_states)
+            new_current_states = old_states[:,np.array(list_of_selected_state_features)]    
+            
+            new_next_states = []
+            old_next_states = old_data.get_next_states()
+            for i in range(len(old_next_states)):
+                new_next_states.append(old_next_states[i][np.array(list_of_selected_state_features)])
+            new_next_states = np.array(new_next_states)
+             
+            new_act_space = copy.deepcopy(old_data.action_space)
+            new_actions = copy.deepcopy(old_data.get_actions())
+                          
+            new_data.observation_space = new_obs_space
+            new_data.action_space = new_act_space
+            
+            new_data.dataset = new_data.arrays_as_data(states=new_current_states, actions=new_actions, 
+                                                        rewards=old_data.get_rewards(), next_states=new_next_states, 
+                                                        absorbings=old_data.get_absorbing(), 
+                                                        lasts=old_data.get_episode_terminals())
+            new_data.tuples_to_lists()
+            
+            return new_data
+        else:
+            wrn_msg = 'The forward feature selection failed: no states were selected. Returning input \'train_data\' as is.' 
+            self.logger.warning(msg=wrn_msg)
+            
+            return old_data
+    
+    def learn(self, train_data=None, env=None):
+        """
+        Parameters
+        ----------
+        train_data: This can be a dataset that will be used for training. It must be an object of a Class inheriting from Class
+                    TabularDataSet.
+                    
+                    The default is None.
+                                              
+        env: This must be a simulator/environment. It must be an object of a Class inheriting from Class BaseEnvironment.
+        
+              The default is None.
+             
+        Returns
+        -------
+        outputFE: This is an object of Class BlockOutput containing as train_data the new train_data and as env the new env: by 
+                  new we mean that it utilise the new state-action representation containing only the selected meaningful 
+                  features.
+                  
+                  If the call to the method learn() implemented in the Class FeatureEngineering was not successful the object of
+                  Class BlockOutput is empty.
+        """
+        
+        #resets is_learn_successful to False, checks pipeline_type, checks the types of train_data and env, and makes sure that 
+        #they are not both None and selects the right inputs:
+        starting_data_env = super().learn(train_data=train_data, env=env)      
+        
+        #if super().learn() returned something that is of Class BlockOutput it means that up in the chain there was an error and
+        #i need to return here the empty object of Class BlockOutput
+        if(isinstance(starting_data_env, BlockOutput)):
+            return BlockOutput(obj_name=self.obj_name)
+        
+        new_train_data = None
+        new_env = None
+        
+        #this block only works on objects of Class TabularDataSet
+        if((starting_data_env[0] is not None) and (not isinstance(starting_data_env[0], TabularDataSet))):
+            self.is_learn_successful = False 
+            self.logger.error(msg='The \'train_data\' must be an object of a Class inheriting from Class \'TabularDataSet\'!')
+            return BlockOutput(obj_name=self.obj_name)
+        
+        #starting_data_env is a list of two: train_data and env. In starting_data_env[0] we have the train_data and in 
+        #starting_data_env[1] we have the env. On these we call the methods feature_engineer_data and feature_engineer_env
+        #only in case they are not None:
+        if(starting_data_env[0] is not None):
+            if(starting_data_env[0].observation_space.shape[0] == 1):
+                wrn_msg = 'The observation space has only one dimension: no feature selection is possible. Returning the'\
+                          +' original train_data!'
+                self.logger.warning(msg=wrn_msg)
+                new_train_data = starting_data_env[0]
+            else:
+                new_train_data = self._feature_engineer_data(old_data=starting_data_env[0])    
+                
+        if(starting_data_env[1] is not None):
+            if(starting_data_env[1].observation_space.shape[0] == 1):
+                wrn_msg = 'The observation space has only one dimension: no feature selection is possible. Returning the'\
+                          +' original env!'
+                self.logger.warning(msg=wrn_msg)
+                new_env = starting_data_env[1]
+            else:
+                if(starting_data_env[0] is None):
+                    self.original_data_input_to_the_block = None
+                else:
+                    wrn_msg = 'The \'train_data\' is not \'None\': using the provided \'train_data\' instead of extracting'\
+                              +' a new dataset with \'data_gen_block_for_env_wrap\'!'
+                    self.logger.warning(msg=wrn_msg)
+                    self.original_data_input_to_the_block = starting_data_env[0]
+                
+                new_env = self._feature_engineer_env(old_env=starting_data_env[1])
+        
+        outputFE = BlockOutput(obj_name=str(self.obj_name)+'_result', log_mode=self.log_mode, 
+                               checkpoint_log_path=self.checkpoint_log_path, verbosity=self.verbosity, train_data=new_train_data, 
+                               env=new_env)
+            
+        self.is_learn_successful = True
+        self.logger.info(msg='\''+str(self.__class__.__name__)+'\' object learnt successfully!')
+        return outputFE
+
+    def analyse(self):
+        """
+        This method is yet to be implemented.
+        """
+
+        raise NotImplementedError
+    
+    
 class FeatureEngineeringNystroemMap(FeatureEngineering):
     """
     This Class implements a specific feature engineering algorithm: it constructs an approximate feature map for an arbitrary 
@@ -1011,12 +1406,27 @@ class FeatureEngineeringNystroemMap(FeatureEngineering):
         self.works_on_box_observation_space = True
         self.works_on_discrete_observation_space = False
         
-        #this block has parameters and i may want to tune it
+        #this block has parameters and I may want to tune them:
         self.is_parametrised = True
                 
         self.algo_params = algo_params
         
         self.data_gen_block_for_env_wrap = data_gen_block_for_env_wrap
+        
+        if(self.data_gen_block_for_env_wrap is None):
+            #extract data from the env using a DataGeneration block. This is needed because I need to have the same 
+            #transformation for the entire environment, and the only way to do so is to fit the transformation on the same 
+            #dataset. Otherwise for each call of the step method i would fit a different transformation, and so the operation 
+            #would not be consistent among different calls of the step method of the same environment.
+            data_gen_params = dict(eval_metric=SomeSpecificMetric(obj_name='place_holder_metric'), 
+                                   obj_name='data_gen_for_wrappin_env', seeder=self.seeder, 
+                                   algo_params={'n_samples': Integer(hp_name='n_samples', obj_name='n_samples_data_gen', 
+                                                current_actual_value=100000)},
+                                   log_mode=self.log_mode, 
+                                   checkpoint_log_path=self.checkpoint_log_path, verbosity=0, n_jobs=self.n_jobs, 
+                                   job_type=self.job_type)
+            
+            self.data_gen_block_for_env_wrap = DataGenerationRandomUniformPolicy(**data_gen_params)
         
         if(self.algo_params is None):
             kernel = Categorical(hp_name='kernel', current_actual_value='rbf', possible_values=['additive_chi2', 'chi2',
@@ -1045,19 +1455,6 @@ class FeatureEngineeringNystroemMap(FeatureEngineering):
             self.algo_params = {'kernel': kernel, 'gamma': gamma, 'random_state': random_state, 'n_components': n_components,
                                 'n_jobs': n_of_jobs}
             
-        if(self.data_gen_block_for_env_wrap is None):
-            #extract data from the env using a DataGeneration block. This is needed because I need to have the same 
-            #transformation for the entire environment, and the only way to do so is to fit the transformation on the same 
-            #dataset. Otherwise for each call of the step method i would fit a different transformation, and so the operation 
-            #would not be consistent among different calls of the step method of the same environment.
-            data_gen_params = dict(eval_metric=SomeSpecificMetric(obj_name='place_holder_metric'), 
-                                   obj_name='data_gen_for_wrappin_env', seeder=self.seeder, 
-                                   algo_params={'n_samples': 100000}, log_mode=self.log_mode, 
-                                   checkpoint_log_path=self.checkpoint_log_path, verbosity=0, n_jobs=self.n_jobs, 
-                                   job_type=self.job_type)
-            
-            self.data_gen_block_for_env_wrap = DataGenerationRandomUniformPolicy(**data_gen_params)
-
         #create a dictionary with values and not objects of Class HyperParameter:
         dict_of_values = self._select_current_actual_value_from_hp_classes(params_objects_dict=self.algo_params)
             
@@ -1286,42 +1683,6 @@ class FeatureEngineeringNystroemMap(FeatureEngineering):
         self.logger.info(msg='\''+str(self.__class__.__name__)+'\' object learnt successfully!')
         return outputFE
     
-    def get_params(self):
-        """
-        Returns
-        -------
-        A deep copy of the parameters in the dictionary self.algo_params.
-        """
-        
-        return copy.deepcopy(self.algo_params)
-    
-    def set_params(self, new_params):
-        """
-        Parameters
-        ----------
-        new_params: The new parameters to be used in the specific feature engineering algorithm. It must be a dictionary that 
-                    does not contain any dictionaries(i.e: all parameters must be at the same level).
-                    
-        Returns
-        -------
-        bool: This method returns True if new_params is set correctly, and False otherwise.
-        """
-        
-        if(new_params is not None):   
-            self.algo_params = new_params
-            
-            current_params = self.get_params()
-            
-            if(current_params is not None):
-                self.algo_params_upon_instantiation = copy.deepcopy(current_params)
-                return True
-            else:
-                self.logger.error(msg='There was an error getting the parameters!')
-                return False
-        else:
-            self.logger.error(msg='Cannot set parameters: \'new_params\' is \'None\'!')
-            return False            
-        
     def analyse(self):
         """
         This method is yet to be implemented.

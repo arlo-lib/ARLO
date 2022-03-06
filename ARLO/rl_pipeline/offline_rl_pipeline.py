@@ -6,6 +6,8 @@ The Class OfflineRLPipeline inherits from the Class RLPipeline.
 An OfflineRLPipeline is used to solve an offline reinforcement learning problem. 
 """
 
+import numpy as np
+
 from ARLO.dataset.dataset import BaseDataSet
 from ARLO.rl_pipeline.rl_pipeline import RLPipeline
 from ARLO.block.block_output import BlockOutput
@@ -134,6 +136,8 @@ class OfflineRLPipeline(RLPipeline):
                     self.logger.info(msg='Now evaluating learnt policy...')
                     res_eval = tmp_block.eval_metric.evaluate(block_res=tmp_res, block=tmp_block, train_data=train_data, env=env)
                     policy_eval = {'eval_mean': res_eval, 'eval_var': tmp_block.eval_metric.eval_var}
+                    self.logger.info(msg='Mean of policy evaluation: '+str(policy_eval['eval_mean']))
+                    self.logger.info(msg='Standard deviation of policy evaluation: '+str(np.sqrt(policy_eval['eval_var'])))
                 elif(isinstance(tmp_block, DataGeneration) or isinstance(tmp_block, DataPreparation)):
                     #DataGeneration and DataPreparation blocks return BaseDataSet:    
                     train_data = tmp_res.train_data

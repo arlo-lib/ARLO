@@ -46,7 +46,8 @@ class ModelGeneration(Block):
                 Alternatively it can also be an object of any Class that exposes the method draw_action() taking as parameter 
                 just a single state.
                 
-        regressor_type: This is the regressor_type used in the policy.
+        regressor_type: This is the regressor_type used in the policy. It is either: 'action_regressor', 'q_regressor' or 
+                        'generic_regressor'
             
         approximator: This is the approximator used in the policy: this may be used when doing batch_evaluation in the 
                       DiscountedReward Class for example. 

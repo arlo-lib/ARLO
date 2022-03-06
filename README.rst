@@ -41,17 +41,40 @@ are present.
 
 Supported Blocks
 ================
-Data Generation: Random Uniform Policy, MEPOL
+ -Data Generation: Random Uniform Policy, MEPOL.
 
-Data Preparation: 1-KNN Imputation, Mean Imputation
+ -Data Preparation: Identity Block, 1-KNN Imputation, Mean Imputation.
 
-Feature Engineering: Recursive Feature Selection, Forward Feature Selection, Nystroem Map Feature Generation
+ -Feature Engineering: Itdentity Block, Recursive Feature Selection, Forward Feature Selection, Nystroem Map Feature Generation.
 
-Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP
+ -Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP.
 
-Metric: TD Error, Discounted Reward, Time Series Rolling Discounted Reward
+ -Metric: TD Error, Discounted Reward, Time Series Rolling Discounted Reward.
 
-Tuner: TunerGenetic, TunerOptuna
+ -Tuner: TunerGenetic, TunerOptuna.
+
+ -Input Loader: Load same environment, Load same dataset, Load bootstrapped dataset, Load bootstrapped dataset of different lenghts
+                and combinations of the above.
+
+ -Environment: Grid World, Car On Hill, CartPole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
+
+Other than the blocks there are also other implemented capabilities in the library: saving and loading of all objects, creations
+of plots with the performance obtained throughout the learning procedure of Online Model Generation blocks, creations of heatmaps
+showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained in a Tunable Unit of 
+an Automatic Unit.
+
+Why you should use ARLO
+=======================
+ -It is well written and documented
+ 
+ -Given that AutoML (and thus AutoRL) are very computationally expensive ARLO tries to optimize as much as it can all the 
+  operations. For example you can extract a dataset with a Data Generation block in parallel, you can learn RL algorithms in 
+  parallel, you can evaluate blocks in parallel and so on and so forth.
+ 
+ -It is ``fully`` extendable: anything (a block, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can 
+  be made up into a Block compatible with the framework and the library.
+  
+  Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
 
 Links to resources used in the paper and in the library
 =======================================================
