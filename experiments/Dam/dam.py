@@ -25,7 +25,8 @@ if __name__ == '__main__':
                   'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
                 }
     
-    model_gen = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('m_g'), obj_name='fqi',
+    model_gen = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('fill_in_metric_model_gen'), 
+                                                  obj_name='model_gen_fqi',
                                                   regressor_type='action_regressor',
                                                   algo_params=my_params, log_mode='file', checkpoint_log_path=dir_chkpath)
     model_gen.pipeline_type = 'offline'
@@ -255,7 +256,7 @@ if __name__ == '__main__':
         def get_state(self):
             return np.array(self.state)
     
-    ###Create Env Class for ARLO
+    # Create Env Class for ARLO
     class myDam(BaseEnvironment):
         def __init__(self, obj_name, experiment, seeder=2, log_mode='console', checkpoint_log_path=None, verbosity=3, n_jobs=1, 
                       job_type='process'):
@@ -291,7 +292,7 @@ if __name__ == '__main__':
             
     my_dam = myDam(obj_name='my_dam', experiment=True)
     
-    data_gen = DataGenerationRandomUniformPolicy(eval_metric=SomeSpecificMetric('d_g'), obj_name='d_g', 
+    data_gen = DataGenerationRandomUniformPolicy(eval_metric=SomeSpecificMetric('data_gen'), obj_name='data_gen', 
                                                  algo_params={'n_samples': Integer(obj_name='n_samples_data_gen', 
                                                                                    hp_name='n_samples', 
                                                                                    current_actual_value=10800)}) 
@@ -299,7 +300,7 @@ if __name__ == '__main__':
     data_gen.pre_learn_check(env=my_dam)
     out_data_gen = data_gen.learn(env=my_dam)
     
-    feat_block = FeatureEngineeringFSCMI(eval_metric=SomeSpecificMetric('fillin_metric'), obj_name='feat_eng', 
+    feat_block = FeatureEngineeringFSCMI(eval_metric=SomeSpecificMetric('fillin_metric'), obj_name='feat_block', 
                                          n_jobs=1, job_type='process', log_mode='file', checkpoint_log_path=dir_chkpath)
     feat_block.pipeline_type = 'offline'
     
@@ -365,7 +366,7 @@ if __name__ == '__main__':
                 
             tmp_env = wrapped_env(obj_name='wrapped', env=copy.deepcopy(my_dam))
             tmp_env.current_feats = np.array(current_selected_features)
-            metr = DiscountedReward(obj_name='metr', n_episodes=10, batch=True)
+            metr = DiscountedReward(obj_name='metric', n_episodes=10, batch=True)
             tmp_eval = metr.evaluate(block_res=res, block=model_gen, env=tmp_env)
             
             print(metr.eval_mean, np.sqrt(metr.eval_var))
