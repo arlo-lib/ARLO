@@ -87,6 +87,8 @@ Links to resources used in the paper and in the library
 =======================================================
 `MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_
 
+`MushroomRL Benchmark <https://mushroom-rl-benchmark.readthedocs.io/en/latest/>`_
+
 `Optuna <https://github.com/optuna/optuna>`_
 
 `Dam Enironment <https://github.com/AndreaTirinzoni/iw-transfer-rl>`_
@@ -94,3 +96,5 @@ Links to resources used in the paper and in the library
 `LQG environment <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_
 
 `Data Generation with MEPOL <https://github.com/muttimirco/mepol/tree/303fb69d90e03cbb45a4619c1ed3843735f640ba>`_
+
+`Feature Selection via Mutual Information <https://arxiv.org/abs/1907.07384>`_
