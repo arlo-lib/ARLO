@@ -93,7 +93,7 @@ Links to resources used in the paper and in the library
 
 `Dam Enironment <https://github.com/AndreaTirinzoni/iw-transfer-rl>`_
 
-`LQG environment <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_
+`LQG Environment <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_
 
 `Data Generation with MEPOL <https://github.com/muttimirco/mepol/tree/303fb69d90e03cbb45a4619c1ed3843735f640ba>`_
 
