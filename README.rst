@@ -16,8 +16,9 @@ You can find the site `here <https://arlo-lib.github.io/arlo-lib/>`_.
 
 In ARLO the most general offline and online RL pipelines are shown below:
 
-.. image:: resources/offline_pipeline.png
-   :width: 700
+.. raw:: html
+
+   <img src="resources/offline_pipeline.png" align="center" width="700px">
    
 .. image:: resources/online_pipeline.png
    :width: 500
