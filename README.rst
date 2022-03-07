@@ -61,7 +61,8 @@ Supported Blocks
   Forward Feature Selection via Mutual Information `[Beraha et al., 2019] <https://arxiv.org/abs/1907.07384>`_, 
   Nystroem Map Feature Generation.
 
-* Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP (`MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_).
+* Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP. These are wrappers of the algorithms implemented in
+  `MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_.
 
 * Metric: TD Error, Discounted Reward, Time Series Rolling Discounted Reward.
 
