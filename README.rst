@@ -21,8 +21,12 @@ In ARLO the most general offline and online RL pipelines are the ones represente
    :scale: 55 %   
    
 A given stage of one of the above pipelines can be run with a fixed set of hyper-paramters or it can be an automatic stage in 
-which the hyper-paramters are tuned. Moreover it is also possible to have an automatic pipeline in which all the hyper-paramters 
-of all the stages making up the pipeline are tuned.
+which the hyper-paramters are tuned. 
+
+Moreover it is also possible to have an automatic pipeline in which all the hyper-paramters of all the stages making up the 
+pipeline are tuned.
+
+Custom algorithms can be used in any stage for any purpose (algorithm, metric, tuner, environment, and so on, and so forth).
       
 Installation
 ============
@@ -76,7 +80,7 @@ Supported Units
 * Environment: Grid World, Car On Hill, Cart Pole, Inverted Pendulum, 
   `LQG <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
 
-Other than the blocks there are also other implemented capabilities in the library: 
+There are also other implemented capabilities in the library: 
 
 * Saving and loading of all objects
 
@@ -95,8 +99,8 @@ Why you should use ARLO
  
 * Given that AutoML (and thus AutoRL) are very computationally expensive ARLO tries to optimize as much as it can all the operations. 
   For example you can extract a dataset with a Data Generation block in parallel, you can learn RL algorithms in parallel, you can 
-  evaluate blocks in parallel and so on and so forth.
+  evaluate blocks in parallel, and so on, and so forth.
  
-* It is ``fully`` extendable: anything (a unit, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can be 
+* It is ``fully`` extendable: anything (a unit, a RL algorithm, a tuner, a metric, an environment, and so on, and so forth) can be 
   made up into a Block compatible with the framework and the library.
   Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
