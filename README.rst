@@ -10,10 +10,18 @@ What is ARLO
 ============
 ARLO is a Python library for Automated Reinforcement Learning.
 
-The full documentation can be downloaded `here <https://github.com/arlo-lib/ARLO/blob/main/ARLO_documentation.pdf>`_.
+The full documentation can be downloaded `here <https://github.com/arlo-lib/ARLO/blob/main/resources/ARLO_documentation.pdf>`_.
 
 You can find the site `here <https://arlo-lib.github.io/arlo-lib/>`_.
 
+In ARLO the most general offline RL pipeline is the following:
+.. image:: resources/offline_pipeline.png
+   :width: 700
+   
+While the most general online RL pipeline is the following:
+.. image:: resources/online_pipeline.png
+   :width: 700
+   
 Installation
 ============
 You can install ``ARLO`` via: 
@@ -74,8 +82,11 @@ Other than the blocks there are also other implemented capabilities in the libra
 * Creations of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
   in a Tunable Unit of an Automatic Unit. An example is shown below:
 
-.. image:: images/plotly_example.png
+.. image:: resources/plotly_example.png
    :width: 700
+   
+   The graph above is created at the end of every Tunable Unit with `Plotly <https://plotly.com>`_. Note that
+   the graph is also interactive, as you can experiment `here <https://github.com/arlo-lib/ARLO/blob/main/resources/plotly_heatmap_example.html>`_.
 
 Why you should use ARLO
 =======================
