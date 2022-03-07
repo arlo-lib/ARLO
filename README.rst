@@ -16,11 +16,11 @@ You can find the site `here <https://arlo-lib.github.io/arlo-lib/>`_.
 
 In ARLO the most general offline and online RL pipelines are shown below:
 
-.. raw:: html
-   <img src="resources/offline_pipeline.png" align="right" width="700px" alt="right-aligned logo in README">
+.. image:: resources/offline_pipeline.png
+   :width: 700 
    
-.. raw:: html
-   <img src="resources/online_pipeline.png" align="right" width="500px" alt="right-aligned logo in README">
+.. image:: resources/online_pipeline.png
+   :width: 500 
    
 Installation
 ============
