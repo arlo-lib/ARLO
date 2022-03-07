@@ -80,14 +80,12 @@ Other than the blocks there are also other implemented capabilities in the libra
 * Creations of plots with the performance obtained throughout the learning procedure of Online Model Generation blocks
 
 * Creations of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
-  in a Tunable Unit of an Automatic Unit. An example is shown below:
+  in a Tunable Unit of an Automatic Unit. These heatmaps are created at the end of every Tunable Unit, in an ``html`` file, with 
+  `Plotly <https://plotly.com>`_, and are also interactive. An example is shown below:
 
 .. image:: resources/plotly_example.png
-   :width: 700
-   
-   The graph above is created at the end of every Tunable Unit with `Plotly <https://plotly.com>`_. Note that
-   the graph is also interactive.
-   
+   :width: 700 
+ 
 Why you should use ARLO
 =======================
 * It is well written and documented
