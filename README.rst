@@ -4,7 +4,8 @@ ARLO
 
 **ARLO: Automated Reinforcement Learning Optimizer.**
 
-This is the repository containing the code for running the experiments of the paper ``ARLO: A Framework for Automated Reinforcement Learning``.
+This is the repository containing the code for running the experiments of the paper ``ARLO: A Framework for Automated Reinforcement 
+Learning``.
 
 What is ARLO
 ============
@@ -19,6 +20,10 @@ In ARLO the most general offline and online RL pipelines are the ones represente
 .. image:: resources/pipelines.png
    :scale: 55 %   
    
+A given stage of one of the above pipelines can be run with a fixed set of hyper-paramters or it can be an automatic stage in 
+which the hyper-paramters are tuned. Moreover it is also possible to have an automatic pipeline in which all the hyper-paramters 
+of all the stages making up the pipeline are tuned.
+      
 Installation
 ============
 You can install ``ARLO`` via: 
@@ -48,7 +53,7 @@ Examples
 Before diving into the ``experiments`` you may want to checkout the folder ``examples`` where simple examples of usage of ``ARLO``
 are present.
 
-Supported Blocks
+Supported Units
 ================
 * Data Generation: Random Uniform Policy, MEPOL `[Mutti et al., 2021] <https://github.com/muttimirco/mepol/tree/303fb69d90e03cbb45a4619c1ed3843735f640ba>`_
 
@@ -92,6 +97,6 @@ Why you should use ARLO
   For example you can extract a dataset with a Data Generation block in parallel, you can learn RL algorithms in parallel, you can 
   evaluate blocks in parallel and so on and so forth.
  
-* It is ``fully`` extendable: anything (a block, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can be 
+* It is ``fully`` extendable: anything (a unit, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can be 
   made up into a Block compatible with the framework and the library.
   Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
