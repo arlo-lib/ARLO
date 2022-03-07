@@ -4,6 +4,7 @@ from ARLO.metric import SomeSpecificMetric
 from ARLO.environment import BaseHalfCheetah
 
 if __name__ == '__main__':
+    #by default extracts 100k samples
     my_data_gen = DataGenerationRandomUniformPolicy(eval_metric=SomeSpecificMetric(obj_name='some_specific_metric'), 
                                                     obj_name='my_data_gen')
 
