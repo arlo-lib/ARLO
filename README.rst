@@ -14,11 +14,11 @@ The full documentation can be downloaded `here <https://github.com/arlo-lib/ARLO
 
 You can find the site `here <https://arlo-lib.github.io/arlo-lib/>`_.
 
-In ARLO the most general offline RL pipeline is the following:
+In ARLO the most general offline and online RL pipelines are shown below:
+
 .. image:: resources/offline_pipeline.png
    :width: 700
    
-While the most general online RL pipeline is the following:
 .. image:: resources/online_pipeline.png
    :width: 700
    
@@ -43,8 +43,8 @@ experiments you need to install ``ARLO``.
 The only thing you need to configure in order to run experiments is the value of the variable ``dir_chkpath``, present in the first line
 after the main guard in each script, which is the path to the folder used to save the outputs of the experiments. 
 
-Moreover in the folder ``experiments`` there is a sub-folder named ``plotting scripts`` that contains the scripts used to generate the
-plots and the tables present in the paper.
+Moreover in the folder ``experiments`` there is a sub-folder named ``Scripts for creating plots`` that contains the scripts used to 
+generate the plots and the tables present in the paper.
 
 Examples
 ========
