@@ -85,7 +85,7 @@ There are also other implemented capabilities in the library:
 
 * Creations of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
   in a Tunable Unit of an Automatic Unit. These heatmaps are created at the end of every Tunable Unit, in an ``html`` file, with 
-  `Plotly <https://plotly.com>`_, and are also interactive. An example is shown below:
+  `Plotly <https://plotly.com>`_, and are also interactive. A screenshot is shown below:
 
 .. image:: resources/plotly_example.png
    :width: 700 
