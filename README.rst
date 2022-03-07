@@ -75,7 +75,7 @@ Other than the blocks there are also other implemented capabilities in the libra
   in a Tunable Unit of an Automatic Unit. An example is shown below:
 
 .. image:: images/plotly_example.png
-   :align: center
+   :align: right
    :width: 700
 
 Why you should use ARLO
