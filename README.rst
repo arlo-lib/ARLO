@@ -76,6 +76,7 @@ Other than the blocks there are also other implemented capabilities in the libra
 
 .. image:: images/plotly_example.png
    :width: 800
+   :margin: 0px auto
 
 Why you should use ARLO
 =======================
