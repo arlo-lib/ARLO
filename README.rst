@@ -14,7 +14,7 @@ The full documentation can be downloaded `here <https://github.com/arlo-lib/ARLO
 
 You can find the site `here <https://arlo-lib.github.io/arlo-lib/>`_.
 
-In ARLO the most general offline and online RL pipelines are shown below:
+In ARLO the most general offline and online RL pipelines are the ones represented below:
 
 .. image:: resources/offline_pipeline.png
    :width: 700 
