@@ -74,7 +74,6 @@ Other than the blocks there are also other implemented capabilities in the libra
 * Creations of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
   in a Tunable Unit of an Automatic Unit. An example is shown below:
   .. figure:: images/plotly_example.png
-    :scale: 50 %
 
 Why you should use ARLO
 =======================
