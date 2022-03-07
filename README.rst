@@ -86,8 +86,8 @@ Other than the blocks there are also other implemented capabilities in the libra
    :width: 700
    
    The graph above is created at the end of every Tunable Unit with `Plotly <https://plotly.com>`_. Note that
-   the graph is also interactive, as you can experiment `here <https://github.com/arlo-lib/ARLO/blob/main/resources/plotly_heatmap_example.html>`_.
-
+   the graph is also interactive.
+   
 Why you should use ARLO
 =======================
 * It is well written and documented
