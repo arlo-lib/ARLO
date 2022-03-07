@@ -20,7 +20,7 @@ In ARLO the most general offline and online RL pipelines are the ones represente
    :width: 700 
    
 .. image:: resources/online_pipeline.png
-   :scale: 50 % 
+   :scale: 60 % 
    
 Installation
 ============
