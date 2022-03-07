@@ -94,10 +94,11 @@ Why you should use ARLO
 =======================
 * It is well written and documented
  
-* Given that AutoML (and thus AutoRL) are very computationally expensive ARLO tries to optimize as much as it can all the operations. 
+* Given that AutoML (and thus AutoRL) are computationally intensive ARLO tries to optimize, as much as possible, all the operations. 
   For example you can extract a dataset with a Data Generation block in parallel, you can learn RL algorithms in parallel, you can 
   evaluate blocks in parallel, and so on, and so forth.
  
 * It is ``fully`` extendable: anything (a unit, a RL algorithm, a tuner, a metric, an environment, and so on, and so forth) can be 
   made up into a Block compatible with the framework and the library.
-  Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
+  Practically, differently from what happens with many AutoML libraries, you are ``not`` bound to a specific set of RL algorithms, 
+  or to a specific tuner, and so on, and so forth.
