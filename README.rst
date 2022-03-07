@@ -1,8 +1,6 @@
 **********
-ARLO
+ARLO: Automated Reinforcement Learning Optimizer
 **********
-
-**ARLO: Automated Reinforcement Learning Optimizer.**
 
 This is the repository containing the code for running the experiments of the paper ``ARLO: A Framework for Automated Reinforcement 
 Learning``.
