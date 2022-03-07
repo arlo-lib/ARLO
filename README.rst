@@ -45,22 +45,25 @@ are present.
 
 Supported Blocks
 ================
-* Data Generation: Random Uniform Policy, MEPOL.
+* Data Generation: Random Uniform Policy, MEPOL `[Mutti et al., 2021] <https://github.com/muttimirco/mepol/tree/303fb69d90e03cbb45a4619c1ed3843735f640ba>`_
 
 * Data Preparation: Identity Block, 1-KNN Imputation, Mean Imputation.
 
-* Feature Engineering: Identity Block, Recursive Feature Selection, Forward Feature Selection, Nystroem Map Feature Generation.
+* Feature Engineering: Identity Block, Recursive Feature Selection `[Castelletti et al., 2011] <https://re.public.polimi.it/retrieve/handle/11311/635835/161137/Castelletti%20et%20al._Unknown_Tree-based%20Variable%20Selection%20for%20Dimensionality%20Reduction%20of%20Large-scale%20Control%20Systems.pdf>`_, 
+  Forward Feature Selection via Mutual Information `[Beraha et al., 2019] <https://arxiv.org/abs/1907.07384>`_, 
+  Nystroem Map Feature Generation.
 
-* Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP.
+* Model Generation: FQI, DoubleFQI, LSPI, DQN, PPO, DDPG, SAC, GPOMDP (`MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_).
 
 * Metric: TD Error, Discounted Reward, Time Series Rolling Discounted Reward.
 
-* Tuner: TunerGenetic, TunerOptuna.
+* Tuner: Genetic Algorithm, `Optuna <https://github.com/optuna/optuna>`_.
 
 * Input Loader: Load same environment, Load same dataset, Load bootstrapped dataset, Load bootstrapped dataset of different lenghts
   and combinations of the above.
 
-* Environment: Grid World, Car On Hill, Cart Pole, Inverted Pendulum, LQG, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
+* Environment: Grid World, Car On Hill, Cart Pole, Inverted Pendulum, 
+  `LQG <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_, HalfCheetah, Ant, Hopper, Humanoid, Swimmer, Walker2d.
 
 Other than the blocks there are also other implemented capabilities in the library: 
 
@@ -82,19 +85,3 @@ Why you should use ARLO
 * It is ``fully`` extendable: anything (a block, a RL algorithm, a tuner, a metric, an environment, and so on and so forth) can be 
   made up into a Block compatible with the framework and the library.
   Practically, you are not bound to a specific set of RL algorithms, or to a specific tuner, as it happens with many AutoML libraries.
-
-Links to resources used in the paper and in the library
-=======================================================
-`MushroomRL <https://github.com/MushroomRL/mushroom-rl>`_
-
-`MushroomRL Benchmark <https://mushroom-rl-benchmark.readthedocs.io/en/latest/>`_
-
-`Optuna <https://github.com/optuna/optuna>`_
-
-`Dam Enironment <https://github.com/AndreaTirinzoni/iw-transfer-rl>`_
-
-`LQG Environment <https://github.com/T3p/potion/blob/master/potion/envs/lq.py>`_
-
-`Data Generation with MEPOL <https://github.com/muttimirco/mepol/tree/303fb69d90e03cbb45a4619c1ed3843735f640ba>`_
-
-`Feature Selection via Mutual Information <https://arxiv.org/abs/1907.07384>`_
