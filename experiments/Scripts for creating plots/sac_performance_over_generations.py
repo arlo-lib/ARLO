@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import tikzplotlib
+
 if __name__ == '__main__':
     x=np.arange(49)
     
@@ -56,3 +58,4 @@ if __name__ == '__main__':
     
     plt.plot()
     plt.plot(x,y)
+    tikzplotlib.save(plt)
