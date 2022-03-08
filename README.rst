@@ -86,7 +86,7 @@ There are also other implemented capabilities in the library:
 * Creation of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
   in a Tunable Unit of an Automatic Unit. These heatmaps are created at the end of every Tunable Unit, in an ``html`` file, with 
   `Plotly <https://plotly.com>`_, and are also interactive (you can play with one 
-  `here <https://https://github.com/arlo-lib/arlo-lib/plotly_heatmap_example.html>`_). A screenshot is shown below:
+  `here <https://github.com/arlo-lib/arlo-lib/blob/main/plotly_heatmap_example.html>`_). A screenshot is shown below:
 
 .. image:: resources/plotly_example.png
    :width: 700 
