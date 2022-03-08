@@ -17,12 +17,12 @@ if __name__ == '__main__':
     
     my_params = {'approximator': Categorical(hp_name='approximator', obj_name='approximator_fqi', 
                                              current_actual_value=ExtraTreesRegressor),
-                  'n_iterations': Integer(hp_name='n_iterations', current_actual_value=60, obj_name='fqi_n_iterations'),
-                  'n_estimators': Integer(hp_name='n_estimators', current_actual_value=100, obj_name='fqi_xgb_n_estimators'),
-                  'criterion': Categorical(hp_name='criterion', current_actual_value='squared_error', obj_name='criterion'),
-                  'min_samples_split': Integer(hp_name='min_samples_split', current_actual_value=10, 
+                 'n_iterations': Integer(hp_name='n_iterations', current_actual_value=60, obj_name='fqi_n_iterations'),
+                 'n_estimators': Integer(hp_name='n_estimators', current_actual_value=100, obj_name='fqi_xgb_n_estimators'),
+                 'criterion': Categorical(hp_name='criterion', current_actual_value='squared_error', obj_name='criterion'),
+                 'min_samples_split': Integer(hp_name='min_samples_split', current_actual_value=10, 
                                                obj_name='min_samples_split'),
-                  'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
+                 'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
                 }
     
     model_gen = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('fill_in_metric_model_gen'), 

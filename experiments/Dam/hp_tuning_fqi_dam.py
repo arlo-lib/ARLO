@@ -293,7 +293,7 @@ if __name__ == '__main__':
                  'criterion': Categorical(hp_name='criterion', current_actual_value='squared_error', obj_name='criterion'),
                  'min_samples_split': min_samples_split,
                  'n_estimators': n_estim,
-                 'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=8)
+                 'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
                 }
     
     model_gen = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('model_gen'), obj_name='fqi',
