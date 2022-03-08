@@ -84,8 +84,8 @@ There are also other implemented capabilities in the library:
 * Creation of plots with the performance obtained throughout the learning procedure of Online Model Generation blocks
 
 * Creation of heatmaps showcasing the impact of pairs of hyper-parameters on the peformance of the optimal configuration obtained
-  in a Tunable Unit of an Automatic Unit. These heatmaps are created at the end of every Tunable Unit, in an ``html`` file, with 
-  `Plotly <https://plotly.com>`_, and are also interactive (you can play with one 
+  in a Tunable Unit of an Automatic Unit. These heatmaps can be create automatically, if specified, at the end of every Tunable 
+  Unit, saved in an ``html`` file, with `Plotly <https://plotly.com>`_, and are also interactive (you can play with one 
   `here <https://arlo-lib.github.io/arlo-lib/plotly_heatmap_example.html>`_). A screenshot is shown below:
 
 .. image:: resources/plotly_example.png

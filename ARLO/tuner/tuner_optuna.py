@@ -24,9 +24,9 @@ class TunerOptuna(Tuner):
     This Class inherits from the Class Tuner.    
     """
     
-    def __init__(self, block_to_opt, eval_metric, input_loader, obj_name, sampler='TPE', n_trials=100, max_time_seconds=3600,
-                 seeder=2, log_mode='console', checkpoint_log_path=None, verbosity=3, n_jobs=1, job_type='process',
-                 output_save_periodicity=25):
+    def __init__(self, block_to_opt, eval_metric, input_loader, obj_name, create_explanatory_heatmap=False, sampler='TPE',
+                 n_trials=100, max_time_seconds=3600, seeder=2, log_mode='console', checkpoint_log_path=None, verbosity=3, 
+                 n_jobs=1, job_type='process', output_save_periodicity=25):
         """
         Parameters
         ----------
@@ -60,8 +60,9 @@ class TunerOptuna(Tuner):
         """
         
         super().__init__(block_to_opt=block_to_opt, eval_metric=eval_metric, input_loader=input_loader, obj_name=obj_name, 
-                         seeder=seeder, log_mode=log_mode, checkpoint_log_path=checkpoint_log_path, verbosity=verbosity,
-                         n_jobs=n_jobs, job_type=job_type, output_save_periodicity=output_save_periodicity)
+                         create_explanatory_heatmap=create_explanatory_heatmap, seeder=seeder, log_mode=log_mode, 
+                         checkpoint_log_path=checkpoint_log_path, verbosity=verbosity, n_jobs=n_jobs, job_type=job_type,
+                         output_save_periodicity=output_save_periodicity)
         
         self.sampler = sampler
         if(self.sampler not in ['CMA-ES', 'TPE', 'GRID', 'RANDOM']):
@@ -89,7 +90,8 @@ class TunerOptuna(Tuner):
 
     def __repr__(self):
          return 'TunerOptuna('+'block_to_opt='+str(self.block_to_opt)+', eval_metric='+str(self.eval_metric)\
-                +', input_loader='+str(self.input_loader)+', obj_name='+str(self.obj_name)+', sampler='+str(self.sampler)\
+                +', input_loader='+str(self.input_loader)+', obj_name='+str(self.obj_name)\
+                +', create_explanatory_heatmap='+str(self.create_explanatory_heatmap)+', sampler='+str(self.sampler)\
                 +', n_trials='+str(self.n_trials)+', max_time_seconds='+str(self.max_time_seconds)\
                 +', seeder='+str(self.seeder)+', local_prng='+str(self.local_prng)+', log_mode='+str(self.log_mode)\
                 +', checkpoint_log_path='+str(self.checkpoint_log_path)+', verbosity='+str(self.verbosity)\
@@ -343,8 +345,9 @@ class TunerOptuna(Tuner):
         best_agent.block_eval = best_agent_eval
         best_agent.save()
         
-        #create heatmap
-        self.create_explanatory_heatmap_hyperparameters()       
+        if(self.create_explanatory_heatmap):
+            #create heatmap
+            self.create_explanatory_heatmap_hyperparameters()       
         
         self.is_tune_successful = True
         

@@ -35,8 +35,9 @@ class Tuner(AbstractUnit, ABC):
     This Class inherits from the Class AbstractUnit and from ABC.
     """
     
-    def __init__(self, block_to_opt, eval_metric, input_loader, obj_name, seeder=2, log_mode='console', checkpoint_log_path=None, 
-                 verbosity=3, n_jobs=1, job_type='process', output_save_periodicity=25):
+    def __init__(self, block_to_opt, eval_metric, input_loader, obj_name, create_explanatory_heatmap=False,
+                 seeder=2, log_mode='console', checkpoint_log_path=None, verbosity=3, n_jobs=1, job_type='process', 
+                 output_save_periodicity=25):
         """
         Parameters
         ----------
@@ -51,6 +52,14 @@ class Tuner(AbstractUnit, ABC):
         output_save_periodicity: This is an integer greater than or equal to 1 and it is the frequency with which to save the 
                                  current block as the tuning procedure takes place. Note that if the member checkpoint_log_path
                                  is not set then nothing will be saved.
+                                 
+                                 The default is 25.
+                                 
+        	create_explanatory_heatmap: This is a boolean and if True then at the end of the call of the method tune() the method 
+                                    create_explanatory_heatmap_hyperparameters is going to be called: this creates an 
+                                    explanatory heatmap of the hyper-parameters.
+                                    
+                                    The default is False.
     
         Non-Parameters Members
         ----------------------                               
@@ -76,11 +85,14 @@ class Tuner(AbstractUnit, ABC):
             
         self.output_save_periodicity = output_save_periodicity
         
+        self.create_explanatory_heatmap = create_explanatory_heatmap
+        
         self.is_tune_successful = False
     
     def __repr__(self):
         return 'Tuner('+'block_to_opt='+str(self.block_to_opt)+', eval_metric='+str(self.eval_metric)\
-               +', input_loader='+str(self.input_loader)+', obj_name='+str(self.obj_name)+', seeder='+str(self.seeder)\
+               +', input_loader='+str(self.input_loader)+', obj_name='+str(self.obj_name)\
+               +', create_explanatory_heatmap='+str(self.create_explanatory_heatmap)+', seeder='+str(self.seeder)\
                +', local_prng='+str(self.local_prng)+', log_mode='+str(self.log_mode)\
                +', checkpoint_log_path='+str(self.checkpoint_log_path)+', verbosity='+str(self.verbosity)\
                +', n_jobs='+str(self.n_jobs)+', job_type='+str(self.job_type)\
@@ -182,6 +194,8 @@ class Tuner(AbstractUnit, ABC):
         
     def create_explanatory_heatmap_hyperparameters(self):
         """
+        This method is only called if create_explanatory_heatmap is set to True.
+        
         This method loads the agents that were constructed throughout the tuning procedure, it creates from these a dataset
         where the features are the hyper-parameters values and the target is the obtained block_eval, it fits a CatBoostRegressor
         on such dataset and then via Plotly it create and save an html file containing a heatmap showcasing the effect of 

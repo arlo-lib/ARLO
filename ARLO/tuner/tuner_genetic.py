@@ -20,9 +20,10 @@ class TunerGenetic(Tuner):
     This Class inherits from the Class Tuner.
     """
     
-    def __init__(self, block_to_opt, eval_metric, input_loader, obj_name, seeder=2, log_mode='console', checkpoint_log_path=None, 
-                 verbosity=3, n_agents=10, n_generations=100, prob_point_mutation=0.5, tuning_mode='best_performant_elitism', 
-                 pool_size=None, n_jobs=1, job_type='process', output_save_periodicity=25):
+    def __init__(self, block_to_opt, eval_metric, input_loader, obj_name, create_explanatory_heatmap=False, seeder=2, 
+                 log_mode='console', checkpoint_log_path=None, verbosity=3, n_agents=10, n_generations=100, 
+                 prob_point_mutation=0.5, tuning_mode='best_performant_elitism', pool_size=None, n_jobs=1, job_type='process', 
+                 output_save_periodicity=25):
         """
         Parameters
         ----------
@@ -68,8 +69,9 @@ class TunerGenetic(Tuner):
         """
         
         super().__init__(block_to_opt=block_to_opt, eval_metric=eval_metric, input_loader=input_loader, obj_name=obj_name, 
-                         seeder=seeder, log_mode=log_mode, checkpoint_log_path=checkpoint_log_path, verbosity=verbosity,
-                         n_jobs=n_jobs, job_type=job_type, output_save_periodicity=output_save_periodicity)
+                         create_explanatory_heatmap=create_explanatory_heatmap, seeder=seeder, log_mode=log_mode, 
+                         checkpoint_log_path=checkpoint_log_path, verbosity=verbosity, n_jobs=n_jobs, job_type=job_type, 
+                         output_save_periodicity=output_save_periodicity)
             
         self.n_agents = n_agents
         self.n_generations = n_generations
@@ -87,7 +89,8 @@ class TunerGenetic(Tuner):
                 
     def __repr__(self):
          return 'TunerGenetic('+'block_to_opt='+str(self.block_to_opt)+', eval_metric='+str(self.eval_metric)\
-                +', input_loader='+str(self.input_loader)+', obj_name='+str(self.obj_name)+', seeder='+str(self.seeder)\
+                +', input_loader='+str(self.input_loader)+', obj_name='+str(self.obj_name)\
+                +', create_explanatory_heatmap='+str(self.create_explanatory_heatmap)+', seeder='+str(self.seeder)\
                 +', local_prng='+str(self.local_prng)+', log_mode='+str(self.log_mode)\
                 +', checkpoint_log_path='+str(self.checkpoint_log_path)+', verbosity='+str(self.verbosity)\
                 +', n_jobs='+str(self.n_jobs)+', job_type='+str(self.job_type)+', n_agents='+str(self.n_agents)\
@@ -646,8 +649,9 @@ class TunerGenetic(Tuner):
         best_agent = self.best_agent
         best_agent_eval = self.best_agent.block_eval
         
-        #create heatmap
-        self.create_explanatory_heatmap_hyperparameters()   
+        if(self.create_explanatory_heatmap):
+            #create heatmap
+            self.create_explanatory_heatmap_hyperparameters()   
         
         self.is_tune_successful = True
         
