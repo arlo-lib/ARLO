@@ -172,12 +172,6 @@ class TunerOptuna(Tuner):
         
         tmp_agent_eval = self.eval_metric.evaluate(block_res=tmp_res, block=my_agent, train_data=self.data, env=self.env)
         
-        #cannot use pruning: i cannot keep the tuner agnostic to the block and still get intermediate evaluation of the block
-        #that is being learn. Thus the following three lines are commented:
-        #trial.report(intermediate_value, step)
-        # if trial.should_prune():
-        #     raise optuna.TrialPruned()
-        
         if((trial.number % self.output_save_periodicity) == 0):
             self.logger.debug(msg='Agent: '+str(my_agent.obj_name)+' Evaluation: '+str(tmp_agent_eval))
             my_agent.block_eval = tmp_agent_eval
