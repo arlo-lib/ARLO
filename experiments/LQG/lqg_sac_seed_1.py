@@ -128,10 +128,10 @@ if __name__ == '__main__':
     
     n_steps_per_fit = Integer(hp_name='n_steps_per_fit', current_actual_value=None, obj_name='n_steps_per_fit')
     
-    n_episodes = Integer(hp_name='n_episodes', current_actual_value=500, range_of_values=[1,1600], to_mutate=True, 
+    n_episodes = Integer(hp_name='n_episodes', current_actual_value=500, range_of_values=[1, 1600], to_mutate=True, 
                          obj_name='n_episodes')
     
-    n_episodes_per_fit = Integer(hp_name='n_episodes_per_fit', current_actual_value=100, range_of_values=[1,500], to_mutate=True, 
+    n_episodes_per_fit = Integer(hp_name='n_episodes_per_fit', current_actual_value=100, range_of_values=[1, 500], to_mutate=True, 
                                  obj_name='n_episodes_per_fit')
     
     dict_of_params_sac = {'actor_network_mu': actor_network_mu, 
