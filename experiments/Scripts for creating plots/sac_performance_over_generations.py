@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    x=np.arange(49)
+    x=np.arange(50)
     
     y=np.array([-59.00138158129509, 
                 -43.966695525591895, 
@@ -52,7 +52,8 @@ if __name__ == '__main__':
                 -9.189954421974406,
                 -9.125946744761388,
                 -9.182482014624696,
-                -9.135265034880312])
+                -9.135265034880312,
+                -9.35027383852138])
     
     plt.plot()
     plt.plot(x,y)
