@@ -11,7 +11,7 @@ if __name__ == '__main__':
     block_to_opt_obj_name = 'my_ddpg' 
     
     #read filenames in folder results:
-    filenames = next(os.walk(dir_path), (None, None, []))[2]  # [] if no file
+    filenames = next(os.walk(dir_path), (None, None, []))[2]
     
     #population of tuned agents:
     agents_pop = []
