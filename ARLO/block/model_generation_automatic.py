@@ -243,8 +243,8 @@ class AutoModelGeneration(ModelGeneration):
                 #if it is the first Tuner I need to assign the value to best_agent and best_agent_eval. This is also what i do in 
                 #case it is not the first Tuner and the new evaluation is  'better' than the current best evaluation.
                 #For more on what 'better' means look at the method which_one_is_better of the eval_metric.
-                if((count_tuned_blocks == 0) or (self.eval_metric.which_one_is_better(agent_1_eval=tmp_tuned_agent_eval, 
-                                                                                      agent_2_eval=best_agent_eval) == 0)):
+                if((count_tuned_blocks == 0) or (self.eval_metric.which_one_is_better(block_1_eval=tmp_tuned_agent_eval, 
+                                                                                      block_2_eval=best_agent_eval) == 0)):
                     best_agent = tmp_tuned_agent
                     best_agent_eval = tmp_tuned_agent_eval
                     
