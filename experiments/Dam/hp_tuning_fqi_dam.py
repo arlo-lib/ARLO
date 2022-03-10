@@ -4,11 +4,12 @@ np.random.seed(2)
 
 from mushroom_rl.utils.spaces import Box, Discrete
 from sklearn.ensemble import ExtraTreesRegressor
+from xgboost import XGBRegressor
 
 from ARLO.environment import BaseEnvironment
 from ARLO.block import DataGenerationRandomUniformPolicy, ModelGenerationMushroomOfflineFQI, AutoModelGeneration
 from ARLO.metric import SomeSpecificMetric, DiscountedReward
-from ARLO.hyperparameter import Integer, Categorical
+from ARLO.hyperparameter import Integer, Categorical, Real
 from ARLO.rl_pipeline import OfflineRLPipeline
 from ARLO.tuner import TunerGenetic
 from ARLO.input_loader import LoadUniformSubSampleWithReplacementAndEnv
@@ -276,45 +277,73 @@ if __name__ == '__main__':
             raise NotImplementedError
             
     my_dam = myDam(obj_name='my_dam', experiment=False)
-    
-    approximator = Categorical(hp_name='approximator', obj_name='approximator_fqi', current_actual_value=ExtraTreesRegressor)
-        
-    n_iter = Integer(hp_name='n_iterations', current_actual_value=60, to_mutate=True, range_of_values=[2,60], 
-                     obj_name='fqi_n_iterations')
-    
-    n_estim = Integer(hp_name='n_estimators', current_actual_value=100, range_of_values=[5,250], to_mutate=True, 
-                      obj_name='fqi_xgb_n_estimators')
- 
-    min_samples_split = Integer(hp_name='min_samples_split', current_actual_value=10, range_of_values=[1,50], to_mutate=True, 
-                                obj_name='min_samples_split')   
                                 
-    my_params = {'approximator': approximator,
-                 'n_iterations': n_iter,
-                 'criterion': Categorical(hp_name='criterion', current_actual_value='squared_error', obj_name='criterion'),
-                 'min_samples_split': min_samples_split,
-                 'n_estimators': n_estim,
-                 'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
-                }
+    #############################################################################################################################
+    extra_trees_params = {'approximator': Categorical(hp_name='approximator', obj_name='approximator', 
+                                                      current_actual_value=ExtraTreesRegressor),
+                          'n_iterations': Integer(hp_name='n_iterations', current_actual_value=60, to_mutate=True, 
+                                                  range_of_values=[2,60], obj_name='fqi_n_iterations'),
+                          'criterion': Categorical(hp_name='criterion', current_actual_value='squared_error', obj_name='criterion'),
+                          'min_samples_split': Integer(hp_name='min_samples_split', current_actual_value=10, range_of_values=[1,50], 
+                                                       to_mutate=True, obj_name='min_samples_split'),
+                          'n_estimators': Integer(hp_name='n_estimators', current_actual_value=100, range_of_values=[5,250],
+                                                  to_mutate=True, obj_name='n_estimators'),
+                          'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
+                         }
     
-    model_gen = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('model_gen'), obj_name='fqi',
-                                                  regressor_type='action_regressor',
-                                                  algo_params=my_params, log_mode=log_mode, checkpoint_log_path=dir_chkpath)
+    model_gen_extra_trees = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('model_gen'), 
+                                                              obj_name='fqi_extra_trees', regressor_type='action_regressor',
+                                                              algo_params=extra_trees_params, log_mode=log_mode, 
+                                                              checkpoint_log_path=dir_chkpath)
     
-    pbt_dict = dict(block_to_opt=model_gen, n_agents=20, n_generations=50, n_jobs=16, job_type='thread', seeder=2,
+    pbt_dict = dict(block_to_opt=model_gen_extra_trees, n_agents=20, n_generations=50, n_jobs=1, job_type='thread', seeder=2,
                     eval_metric=DiscountedReward(obj_name='discounted_rew_genetic_algo', n_episodes=10, batch=True, 
                                                  n_jobs=1, job_type='process', log_mode=log_mode, checkpoint_log_path=dir_chkpath),
                     input_loader=LoadUniformSubSampleWithReplacementAndEnv(obj_name='input_loader_env', single_split_length=10800,
-                                                                           log_mode=log_mode, checkpoint_log_path=dir_chkpath
-                                                                           ), 
-                    obj_name='genetic_algo', prob_point_mutation=0.5, output_save_periodicity=20,
+                                                                           log_mode=log_mode, checkpoint_log_path=dir_chkpath), 
+                    obj_name='genetic_algo_extra_trees', prob_point_mutation=0.5, output_save_periodicity=20,
                     tuning_mode='no_elitism', pool_size=None, log_mode=log_mode, checkpoint_log_path=dir_chkpath)
+    #############################################################################################################################
+    xgb_params = {'approximator': Categorical(hp_name='approximator', obj_name='approximator', 
+                                              current_actual_value=XGBRegressor),
+                  'n_iterations': Integer(hp_name='n_iterations', current_actual_value=60, to_mutate=True, 
+                                          range_of_values=[2,60], obj_name='fqi_n_iterations'),
+                  'subsample': Real(hp_name='subsample', current_actual_value=0.8, obj_name='fqi_xgb_subsample',
+                                    range_of_values=[0.5,1], to_mutate=True),
+                  'max_depth': Integer(hp_name='max_depth', current_actual_value=10, range_of_values=[4,15], to_mutate=True,
+                                       obj_name='fqi_xgb_max_depth'),
+                  'learning_rate': Real(hp_name='learning_rate', current_actual_value=0.3, range_of_values=[1e-3, 0.4], 
+                                        to_mutate=True, obj_name='learning_rate_fqi_xgb'),
+                  'verbosity': Integer(hp_name='verbosity', current_actual_value=0, obj_name='xgb_verb'),
+                  'min_child_weight': Integer(hp_name='min_child_weight', current_actual_value=10, range_of_values=[1,100], 
+                                              to_mutate=True, obj_name='min_child_weight'),
+                  'n_estimators': Integer(hp_name='n_estimators', current_actual_value=100, range_of_values=[5,250],
+                                                  to_mutate=True, obj_name='n_estimators'),
+                  'n_jobs': Integer(obj_name='n_jobs', hp_name='n_jobs', current_actual_value=16)
+                 }
     
+    model_gen_xgb = ModelGenerationMushroomOfflineFQI(eval_metric=SomeSpecificMetric('model_gen'), obj_name='fqi_xgb',
+                                                      regressor_type='action_regressor',
+                                                      algo_params=xgb_params, log_mode=log_mode, 
+                                                      checkpoint_log_path=dir_chkpath)
+    
+    pbt_dict_2 = dict(block_to_opt=model_gen_xgb, n_agents=20, n_generations=50, n_jobs=16, job_type='thread', seeder=2,
+                      eval_metric=DiscountedReward(obj_name='discounted_rew_genetic_algo', n_episodes=10, batch=True, 
+                                                   n_jobs=1, job_type='process', log_mode=log_mode, checkpoint_log_path=dir_chkpath),
+                      input_loader=LoadUniformSubSampleWithReplacementAndEnv(obj_name='input_loader_env', single_split_length=10800,
+                                                                             log_mode=log_mode, checkpoint_log_path=dir_chkpath), 
+                      obj_name='genetic_algo_xgb', prob_point_mutation=0.5, output_save_periodicity=20,
+                      tuning_mode='no_elitism', pool_size=None, log_mode=log_mode, checkpoint_log_path=dir_chkpath)
+    #############################################################################################################################
+
     pbt_1 = TunerGenetic(**pbt_dict)
+    pbt_2 = TunerGenetic(**pbt_dict_2)
     
     auto_model_gen = AutoModelGeneration(eval_metric=DiscountedReward(obj_name='discounted_rew_auto_model_gen', n_episodes=10,
                                                                       batch=True, n_jobs=1, job_type='process', 
                                                                       log_mode=log_mode, checkpoint_log_path=dir_chkpath),
-                                         obj_name='auto_model_gen', tuner_blocks_dict={'genetic_tuner': pbt_1}, 
+                                         obj_name='auto_model_gen', tuner_blocks_dict={'genetic_tuner_extra_trees': pbt_1,
+                                                                                       'genetic_tuner_xgb': pbt_2}, 
                                          log_mode=log_mode, checkpoint_log_path=dir_chkpath)
     
     data_gen = DataGenerationRandomUniformPolicy(eval_metric=SomeSpecificMetric('data_gen'), obj_name='data_gen', 
