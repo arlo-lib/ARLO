@@ -33,7 +33,7 @@ You can install ``ARLO`` via:
 
     pip3 install -e /path/to/ARLO
 
-If you don't have MuJoCo installed you need to `install <https://mujoco.org/download>`_ it. 
+If you don't have ``MuJoCo`` installed you need to `install <https://mujoco.org/download>`_ it. 
 
 Notice that sometimes there can be problems with the installation of ``mujoco_py``. This is not related to ``ARLO`` but it is
 solely realted to the installation of ``mujoco_py``. 
