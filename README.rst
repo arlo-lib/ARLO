@@ -45,7 +45,7 @@ As exaplained `here <https://github.com/openai/mujoco-py/issues/495>`_, a simple
 ``ln -s /usr/local/lib/python3.8/site-packages/glfw/libglfw.3.dylib libglfw.3.dylib``
 
 For more troubleshooting regarding the installation of ``mujoco_py``, see their GitHub page
-`here <https://github.com/openai/mujoco-py>`_.
+`here <https://github.com/openai/mujoco-py>`_, or open an issue on the GitHub page of ``ARLO``.
 
 Moreover Python >= 3.7 is needed.
 
