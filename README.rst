@@ -41,7 +41,8 @@ solely realted to the installation of ``mujoco_py``.
 One common issue that arises on macOS is that MuJoCo and the Python environment cannot use the same ``GLFW`` library. 
 As exaplained `here <https://github.com/openai/mujoco-py/issues/495>`_, a simple fix is to remove ``libglfw.3.dylib`` from 
 ``/path/to/.mujoco/mujoco210/bin`` and then in that folder create a symlink by calling 
-``ln -s /usr/local/lib/python3.8/site-packages/glfw/libglfw.3.dylib libglfw.3.dylib``. 
+
+``ln -s /usr/local/lib/python3.8/site-packages/glfw/libglfw.3.dylib libglfw.3.dylib``
 
 For more troubleshooting regarding the installation of ``mujoco_py``, see their GitHub page
 `here <https://github.com/openai/mujoco-py>`_.
