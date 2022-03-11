@@ -33,7 +33,7 @@ You can install ``ARLO`` via:
 
     pip3 install -e /path/to/ARLO
 
-If you don't have ``MuJoCo`` installed you need to `install <https://mujoco.org/download>`_ it. 
+If you don't have ``MuJoCo`` installed you need to `install <https://mujoco.org/download>`_ it. Moreover Python >= 3.7 is needed.
 
 Notice that sometimes there can be problems with the installation of ``mujoco_py``. This is not related to ``ARLO`` but it is
 solely related to the installation of ``mujoco_py``. 
@@ -48,8 +48,6 @@ As exaplained `here <https://github.com/openai/mujoco-py/issues/495>`_, a simple
 
 For more troubleshooting regarding the installation of ``mujoco_py``, see their GitHub page
 `here <https://github.com/openai/mujoco-py>`_, or open an issue on the GitHub page of ``ARLO``.
-
-Moreover Python >= 3.7 is needed.
 
 The library is tested over macOS and Linux.
 
