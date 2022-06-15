@@ -116,3 +116,29 @@ Why you should use ARLO
   made up into a Block compatible with the framework and the library.
   Basically, differently from what happens with many AutoML libraries, you are ``not`` bound to a specific set of RL algorithms, 
   or to a specific tuner, and so on, and so forth.
+ 
+Cite ARLO
+=========
+If you are using ARLO for your scientific publications, please cite:
+
+.. code:: bibtex
+
+    @article{DBLP:journals/corr/abs-2205-10416,
+      author    = {Marco Mussi and
+                   Davide Lombarda and
+                   Alberto Maria Metelli and
+                   Francesco Trov{\`{o}} and
+                   Marcello Restelli},
+      title     = {ARLO: A Framework for Automated Reinforcement Learning},
+      journal   = {CoRR},
+      volume    = {abs/2205.10416},
+      year      = {2022},
+      url       = {https://doi.org/10.48550/arXiv.2205.10416},
+      doi       = {10.48550/arXiv.2205.10416},
+      eprinttype = {arXiv},
+      eprint    = {2205.10416}
+   }
+
+How to contact us
+=================
+For any question, drop an e-mail at marco.mussi@polimi.it
